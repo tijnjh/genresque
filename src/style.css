@@ -6,11 +6,11 @@ body {
 }
 
 @utility thing {
-  @apply block h-9 bg-white px-3 hover:bg-zinc-50 hover:shadow-inner;
+  @apply block border border-zinc-200 h-9 bg-white px-3 hover:bg-zinc-50 hover:shadow-inner;
 }
 
 ul {
-  @apply col-span-full grid grid-cols-subgrid gap-px;
+  @apply col-span-full grid grid-cols-subgrid;
 }
 
 input {
@@ -19,4 +19,14 @@ input {
 
 li > button {
   @apply thing flex h-9 cursor-default items-center truncate;
+}
+
+@theme inline {
+  --animate-genre-ticker: genre-ticker var(--ticker-duration) linear infinite;
+
+  @keyframes genre-ticker {
+    to {
+      transform: translateX(var(--ticker-distance));
+    }
+  }
 }

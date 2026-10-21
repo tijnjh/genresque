@@ -9,6 +9,7 @@
   "dependencies": {
     "cn": "^0.5.0",
     "domino": "^2.1.8",
+    "interestfor": "^1.0.10",
     "react": "latest",
     "react-dom": "latest",
     "valibot": "^1.5.0"

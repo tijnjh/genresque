@@ -12,10 +12,19 @@ interface ScrappyMethods {
 export class Scrappy implements ScrappyMethods {
   private root?: Document;
 
-  static async init(url: string) {
+  static async init({ raw }: { raw: string }): Promise<Scrappy>;
+  static async init(url: string): Promise<Scrappy>;
+  static async init(arg: string | { raw: string }) {
     const scraper = new Scrappy();
 
-    const html = await (await fetch(url)).text();
+    let html: string;
+
+    if (typeof arg === "string") {
+      html = await (await fetch(arg)).text();
+    } else {
+      html = arg.raw;
+    }
+
     const dom = createWindow(html).document;
 
     scraper.root = dom;

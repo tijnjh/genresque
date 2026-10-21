@@ -1,22 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { Scrappy } from "./scrappy";
-
-let cachedAllGenres: undefined | object;
+import everynoiseHtml from "../../public/everynoise.html?raw";
 
 export const getAllGenres = createServerFn().handler(async () => {
-  const scrappy = await Scrappy.init("http://localhost:5173/everynoise.html");
+  const scrappy = await Scrappy.init({ raw: everynoiseHtml });
 
-  if (!cachedAllGenres) {
-    cachedAllGenres = scrappy.findAll(".genre").map((g) => ({
-      name: g.childNodes[0].textContent!,
-      preview: {
-        title: g.getAttribute("title") ?? undefined,
-        url: g.getAttribute("preview_url") ?? undefined,
-      },
-    }));
-  }
-
-  return cachedAllGenres;
+  return scrappy.findAll(".genre").map((g) => ({
+    name: g.childNodes[0].textContent!,
+    slug: g.querySelector("a")?.href.slice(12, -5),
+    preview: {
+      title: g.getAttribute("title") ?? undefined,
+      url: g.getAttribute("preview_url") ?? undefined,
+    },
+  }));
 });
 
 import * as v from "valibot";
