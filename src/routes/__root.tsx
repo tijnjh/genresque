@@ -33,7 +33,9 @@ function RootComponent() {
           <HeadContent />
         </head>
         <body>
-          <Outlet />
+          <div className="grid grid-[fit-content,1fr] h-dvh">
+            <Outlet />
+          </div>
 
           <Scripts />
         </body>

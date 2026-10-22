@@ -1,5 +1,5 @@
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useGenreTickers } from "../hooks/use-genre-tickers";
 import { GenreTicker } from "./genre-ticker";
 
@@ -19,6 +19,15 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
     columns: 1,
     itemSize: { height: 40, width: 300 },
   });
+
+  const [filterQuery, setFilterQuery] = useState<string>(); // sync with a url queryparam at some point
+
+  const filteredGenres = useMemo(() => {
+    if (!filterQuery) return genres;
+    return genres.filter((g) =>
+      g.name.toLowerCase().includes(filterQuery?.toLowerCase()),
+    );
+  }, [filterQuery]);
 
   useEffect(() => {
     const parent = parentRef.current;
@@ -59,7 +68,7 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
   }, []);
 
   const rowVirtualizer = useVirtualizer({
-    count: Math.ceil(genres.length / columns),
+    count: Math.ceil(filteredGenres.length / columns),
     getScrollElement: () => parentRef.current,
     estimateSize: () => itemSize.height,
     gap: gap.y,
@@ -67,38 +76,49 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
   });
 
   return (
-    <div ref={parentRef} className="h-dvh overflow-auto">
-      <ul
-        ref={gridRef}
-        className="relative m-0 list-none p-0"
-        style={{
-          height: rowVirtualizer.getTotalSize(),
-          width: "100%",
-        }}
-      >
-        {rowVirtualizer.getVirtualItems().flatMap((row) =>
-          Array.from({ length: columns }, (_, column) => {
-            const index = row.index * columns + column;
-            const genre = genres[index];
+    <>
+      <div className="h-full p-4">
+        <input
+          value={filterQuery}
+          onChange={(e) => setFilterQuery(e.currentTarget.value)}
+          className="thing w-full"
+          placeholder="filter genres"
+        />
+      </div>
 
-            if (!genre) return null;
+      <div ref={parentRef} className="overflow-auto h-full">
+        <ul
+          ref={gridRef}
+          className="relative m-0 list-none p-0"
+          style={{
+            height: rowVirtualizer.getTotalSize(),
+            width: "100%",
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().flatMap((row) =>
+            Array.from({ length: columns }, (_, column) => {
+              const index = row.index * columns + column;
+              const genre = filteredGenres[index];
 
-            return (
-              <li
-                key={genre.slug}
-                className="absolute left-0 top-0"
-                style={{
-                  height: itemSize.height,
-                  width: itemSize.width,
-                  transform: `translate(${column * (itemSize.width + gap.x)}px, ${row.start}px)`,
-                }}
-              >
-                <GenreTicker genre={genre} />
-              </li>
-            );
-          }),
-        )}
-      </ul>
-    </div>
+              if (!genre) return null;
+
+              return (
+                <li
+                  key={genre.slug}
+                  className="absolute left-0 top-0"
+                  style={{
+                    height: itemSize.height,
+                    width: itemSize.width,
+                    transform: `translate(${column * (itemSize.width + gap.x)}px, ${row.start}px)`,
+                  }}
+                >
+                  <GenreTicker genre={genre} />
+                </li>
+              );
+            }),
+          )}
+        </ul>
+      </div>
+    </>
   );
 }

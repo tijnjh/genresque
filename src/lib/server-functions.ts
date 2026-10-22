@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { Scrappy } from "./scrappy";
-import genres from "../data/genres.json" with { type: "json" };
+import genres from "../data/genres.gen.json" with { type: "json" };
 
 export const getAllGenres = createServerFn().handler(() => {
   return genres;
