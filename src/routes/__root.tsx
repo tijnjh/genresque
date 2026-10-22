@@ -33,9 +33,7 @@ function RootComponent() {
           <HeadContent />
         </head>
         <body>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-px">
-            <Outlet />
-          </div>
+          <Outlet />
 
           <Scripts />
         </body>

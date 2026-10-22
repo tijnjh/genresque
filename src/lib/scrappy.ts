@@ -46,7 +46,11 @@ export class Scrappy implements ScrappyMethods {
 class ChainableElement<
   T extends Element = HTMLElement,
 > implements ScrappyMethods {
-  constructor(public el: T) {}
+  el: T;
+
+  constructor(el: T) {
+    this.el = el;
+  }
 
   find<T extends Element = HTMLElement>(selector: string) {
     const element = this.el.querySelector<T>(selector);
