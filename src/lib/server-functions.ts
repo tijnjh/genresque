@@ -2,7 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { Scrappy } from "./scrappy";
 import everynoiseHtml from "../../public/everynoise.html?raw";
 
-export const getAllGenres = createServerFn().handler(async () => {
+let allGenres: ReturnType<typeof parseAllGenres> | undefined;
+
+async function parseAllGenres() {
   const scrappy = await Scrappy.init({ raw: everynoiseHtml });
 
   return scrappy.findAll(".genre").map((g) => ({
@@ -13,6 +15,11 @@ export const getAllGenres = createServerFn().handler(async () => {
       url: g.getAttribute("preview_url") ?? undefined,
     },
   }));
+}
+
+export const getAllGenres = createServerFn().handler(() => {
+  allGenres ??= parseAllGenres();
+  return allGenres;
 });
 
 import * as v from "valibot";
