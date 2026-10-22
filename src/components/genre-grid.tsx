@@ -3,19 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useGenreTickers } from "../hooks/use-genre-tickers";
 import { GenreTicker } from "./genre-ticker";
 
-const BREAKPOINT = {
-  xs: 375,
-  sm: 640,
-  lg: 1024,
-};
-const ITEM_RATIO = 16 / 9;
-
-const columns = 3;
-const itemSize = {
-  height: 40,
-  width: 300,
-};
-
 const gap = { x: 4, y: 0 };
 
 export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
@@ -49,13 +36,19 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
         Math.floor((width + gap.x) / (minWidth + gap.x)),
       );
 
-      setLayout({
+      const layout = {
         columns,
         itemSize: {
           height: 40,
           width: Math.max(minWidth, (width - gap.x * (columns - 1)) / columns),
         },
-      });
+      };
+      setLayout((previous) =>
+        previous.columns === layout.columns &&
+        previous.itemSize.width === layout.itemSize.width
+          ? previous
+          : layout,
+      );
     };
 
     const observer = new ResizeObserver(update);
@@ -70,22 +63,8 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
     getScrollElement: () => parentRef.current,
     estimateSize: () => itemSize.height,
     gap: gap.y,
-    overscan: 2,
+    overscan: 8,
   });
-
-  const columnVirtualizer = useVirtualizer({
-    horizontal: true,
-    count: columns,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => itemSize.width,
-    gap: gap.x,
-    overscan: 2,
-  });
-
-  useEffect(() => {
-    rowVirtualizer.measure();
-    columnVirtualizer.measure();
-  }, [itemSize.height, columns]);
 
   return (
     <div ref={parentRef} className="h-dvh overflow-auto">
@@ -94,12 +73,12 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
         className="relative m-0 list-none p-0"
         style={{
           height: rowVirtualizer.getTotalSize(),
-          width: columnVirtualizer.getTotalSize(),
+          width: "100%",
         }}
       >
         {rowVirtualizer.getVirtualItems().map((row) =>
-          columnVirtualizer.getVirtualItems().map((column) => {
-            const index = row.index * columns + column.index;
+          Array.from({ length: columns }, (_, column) => {
+            const index = row.index * columns + column;
             const genre = genres[index];
 
             if (!genre) return null;
@@ -111,7 +90,7 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
                 style={{
                   height: itemSize.height,
                   width: itemSize.width,
-                  transform: `translate(${column.start}px, ${row.start}px)`,
+                  transform: `translate(${column * (itemSize.width + gap.x)}px, ${row.start}px)`,
                 }}
               >
                 <GenreTicker genre={genre} />

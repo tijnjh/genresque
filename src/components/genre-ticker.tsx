@@ -1,4 +1,7 @@
-export function GenreTicker({ genre }: { genre: enoa.Genre }) {
+import { memo, useState } from "react";
+
+export const GenreTicker = memo(function GenreTicker({ genre }: { genre: enoa.Genre }) {
+  const [previewOpen, setPreviewOpen] = useState(false);
   const uid = genre.slug; // replace with genreSlug at some point
 
   return (
@@ -30,6 +33,7 @@ export function GenreTicker({ genre }: { genre: enoa.Genre }) {
       <div
         id={`${uid}-popover`}
         popover=""
+        onToggle={(event) => setPreviewOpen(event.newState === "open")}
         style={{
           positionAnchor: `--${uid}`,
           positionArea: "bottom span-right",
@@ -44,9 +48,11 @@ export function GenreTicker({ genre }: { genre: enoa.Genre }) {
       >
         <div className="flex size-full p-4 gap-4 flex-col justify-center">
           <span className="text-balance">{genre.preview.title}</span>
-          <audio src={genre.preview.url} controls preload="none"></audio>
+          {previewOpen && (
+            <audio src={genre.preview.url} controls preload="none" />
+          )}
         </div>
       </div>
     </>
   );
-}
+});
