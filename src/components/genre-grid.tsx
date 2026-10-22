@@ -76,7 +76,7 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
           width: "100%",
         }}
       >
-        {rowVirtualizer.getVirtualItems().map((row) =>
+        {rowVirtualizer.getVirtualItems().flatMap((row) =>
           Array.from({ length: columns }, (_, column) => {
             const index = row.index * columns + column;
             const genre = genres[index];
@@ -85,7 +85,7 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
 
             return (
               <li
-                key={genre.name}
+                key={genre.slug}
                 className="absolute left-0 top-0"
                 style={{
                   height: itemSize.height,
