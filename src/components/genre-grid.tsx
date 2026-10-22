@@ -38,7 +38,7 @@ export function GenreGrid({ genres }: { genres: enoa.Genre[] }) {
       const rem = parseFloat(
         getComputedStyle(document.documentElement).fontSize,
       );
-      const minWidth = 10 * rem;
+      const minWidth = 8 * rem;
 
       const columns = Math.max(
         1,

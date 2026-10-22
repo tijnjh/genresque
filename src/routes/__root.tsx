@@ -32,8 +32,8 @@ function RootComponent() {
         <head>
           <HeadContent />
         </head>
-        <body>
-          <div className="grid grid-[fit-content,1fr] h-dvh">
+        <body className="relative touch-manipulation bg-zinc-200">
+          <div className="isolate grid grid-[fit-content,1fr] h-dvh">
             <Outlet />
           </div>
 

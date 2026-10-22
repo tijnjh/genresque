@@ -1,26 +1,5 @@
 @import "tailwindcss";
 
-html,
-body {
-  @apply touch-manipulation bg-zinc-200 font-mono;
-}
-
-@utility thing {
-  @apply block border border-zinc-200 h-9 bg-white px-3 hover:bg-zinc-50 hover:shadow-inner;
-}
-
-ul {
-  @apply col-span-full grid grid-cols-subgrid;
-}
-
-input {
-  @apply thing;
-}
-
-li > button {
-  @apply thing flex h-9 cursor-default items-center truncate;
-}
-
 @theme inline {
   --animate-genre-ticker: genre-ticker var(--ticker-duration) linear infinite;
 
