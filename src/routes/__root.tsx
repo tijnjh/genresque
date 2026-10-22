@@ -6,6 +6,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { StrictMode } from "react";
+import styleCss from "../style.css?url";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -18,7 +19,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
     ],
-    links: [{ href: "/src/style.css", rel: "stylesheet" }],
+    links: [{ href: styleCss, rel: "stylesheet" }],
   }),
 
   component: RootComponent,
