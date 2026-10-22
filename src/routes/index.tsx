@@ -15,21 +15,5 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
   const { genres } = Route.useLoaderData();
-  const gridRef = useGenreTickers(genres);
-
-  useEffect(() => {
-    // @ts-expect-error dey no have types
-    import("interestfor");
-  }, []);
-
-  const parentRef = useRef(null);
-
-  const rowVirtualizer = useVirtualizer({
-    count: genres.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 35,
-    lanes: 6,
-  });
-
   return <GenreGrid genres={genres} />;
 }

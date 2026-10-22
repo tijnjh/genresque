@@ -2,7 +2,7 @@ export function GenreTicker({ genre }: { genre: enoa.Genre }) {
   const uid = genre.slug; // replace with genreSlug at some point
 
   return (
-    <li className="min-w-0">
+    <>
       <button
         // @ts-expect-error react being outdated
         interestfor={`${uid}-popover`}
@@ -47,6 +47,6 @@ export function GenreTicker({ genre }: { genre: enoa.Genre }) {
           <audio src={genre.preview.url} controls preload="none"></audio>
         </div>
       </div>
-    </li>
+    </>
   );
 }

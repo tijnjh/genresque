@@ -36,7 +36,7 @@ export function useGenreTickers(genres: readonly unknown[]) {
       });
     }
 
-    const labels = grid.querySelectorAll<HTMLElement>("[data-genre-label]");
+    const labels = new Set<HTMLElement>();
 
     const intersectionObserver = new IntersectionObserver((entries) => {
       for (const entry of entries) {
@@ -60,7 +60,38 @@ export function useGenreTickers(genres: readonly unknown[]) {
     const resizeObserver = new ResizeObserver(invalidateMeasurements);
     resizeObserver.observe(grid);
 
-    for (const label of labels) intersectionObserver.observe(label);
+    function syncLabels() {
+      const current = new Set(
+        grid!.querySelectorAll<HTMLElement>("[data-genre-label]"),
+      );
+
+      for (const label of labels) {
+        if (current.has(label)) continue;
+
+        intersectionObserver.unobserve(label);
+        resizeObserver.unobserve(label);
+        visible.delete(label);
+        measured.delete(label);
+        labels.delete(label);
+      }
+
+      for (const label of current) {
+        if (labels.has(label)) continue;
+
+        labels.add(label);
+        intersectionObserver.observe(label);
+        resizeObserver.observe(label);
+      }
+    }
+
+    const mutationObserver = new MutationObserver(syncLabels);
+
+    mutationObserver.observe(grid, {
+      childList: true,
+      subtree: true,
+    });
+
+    syncLabels();
 
     document.fonts.ready.then(() => {
       if (!disposed) invalidateMeasurements();
@@ -74,6 +105,7 @@ export function useGenreTickers(genres: readonly unknown[]) {
       intersectionObserver.disconnect();
       resizeObserver.disconnect();
       document.fonts.removeEventListener("loadingdone", invalidateMeasurements);
+      mutationObserver.disconnect();
     };
   }, [genres]);
 
