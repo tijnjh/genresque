@@ -1,8 +1,11 @@
 import { AsyncView } from "../components/async-view";
 import { Header } from "../components/header";
+import { Main } from "../components/main";
 import { PlayButton } from "../components/play-button";
+import { SpotifyWidget } from "../components/spotify-widget";
 import { VirtualGrid } from "../components/virtual-grid";
 import { getGenreDetails } from "../lib/server-functions";
+import { findSoundOfPlaylistId } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
@@ -29,26 +32,36 @@ function RouteComponent() {
       <AsyncView query={genreDetailsQuery}>
         {(genre) =>
           genre.artists && (
-            <VirtualGrid entries={genre.artists}>
-              {(artist) => (
-                <div className="flex" key={artist.artistName}>
-                  <Link
-                    to="/artist/$id"
-                    className="btn grow overflow-hidden"
-                    params={{ id: artist.id! }}
-                    title={artist.artistName!}
-                  >
-                    <span className="truncate">{artist.artistName}</span>
-                  </Link>
+            <Main
+              leading={
+                <SpotifyWidget
+                  id={findSoundOfPlaylistId(genre.links!)!}
+                  type="playlist"
+                />
+              }
+              trailing={
+                <VirtualGrid entries={genre.artists}>
+                  {(artist) => (
+                    <div className="flex" key={artist.artistName}>
+                      <Link
+                        to="/artist/$id"
+                        className="btn grow overflow-hidden"
+                        params={{ id: artist.id! }}
+                        title={artist.artistName!}
+                      >
+                        <span className="truncate">{artist.artistName}</span>
+                      </Link>
 
-                  <PlayButton
-                    className="btn-inverse size-9 justify-center"
-                    title={artist.preview.title!}
-                    track={artist.preview}
-                  />
-                </div>
-              )}
-            </VirtualGrid>
+                      <PlayButton
+                        className="btn-inverse size-9 justify-center"
+                        title={artist.preview.title!}
+                        track={artist.preview}
+                      />
+                    </div>
+                  )}
+                </VirtualGrid>
+              }
+            />
           )
         }
       </AsyncView>

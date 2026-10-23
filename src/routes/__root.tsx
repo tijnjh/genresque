@@ -41,10 +41,9 @@ function RootComponent() {
             <head>
               <HeadContent />
             </head>
-            <body className="relative touch-manipulation bg-zinc-200">
-              <div className="isolate grid h-dvh grid-rows-[min-content_1fr]">
-                <Outlet />
-              </div>
+
+            <body className="relative isolate grid h-dvh touch-manipulation grid-rows-[min-content_1fr] bg-zinc-200-800 text-zinc-950-50 scheme-light-dark">
+              <Outlet />
 
               <MiniPlayer />
 

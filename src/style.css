@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tailwind-color-pairings";
 
 @theme inline {
   --animate-genre-ticker: genre-ticker var(--ticker-duration) linear infinite;
@@ -19,11 +20,11 @@ dd {
 }
 
 @utility btn {
-  @apply flex h-9 items-center gap-2 bg-white px-3 hover:bg-zinc-100 active:translate-y-px;
+  @apply flex h-9 items-center gap-2 bg-zinc-50-950 px-3 hover:bg-zinc-100-900 active:translate-y-px;
 }
 
 @utility btn-inverse {
-  @apply btn bg-black text-white hover:bg-zinc-800;
+  @apply btn bg-zinc-950-50 text-zinc-50-950 hover:bg-zinc-800-200;
 }
 
 input,

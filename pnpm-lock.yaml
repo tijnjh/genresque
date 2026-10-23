@@ -26,9 +26,6 @@ importers:
       domino:
         specifier: ^2.1.8
         version: 2.1.8
-      ios-haptics:
-        specifier: ^3.2.0
-        version: 3.2.0
       jotai:
         specifier: ^3.0.1
         version: 3.0.1(@types/react@19.3.0)(react@19.3.1)
@@ -87,6 +84,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.8.1
         version: 0.8.1(@trivago/prettier-plugin-sort-imports@6.0.2(prettier@3.9.10)(supports-color@10.2.2))(prettier@3.9.10)
+      tailwind-color-pairings:
+        specifier: ^0.1.2
+        version: 0.1.2
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
@@ -1789,9 +1789,6 @@ packages:
     resolution: {integrity: sha512-ehuGcf94bQXhfagULNXrJdfnWO38v070jxSx/qE87Kjzmu2fU7ro5EFAb+OPituLqgfyuQaym5DlrNydW2sJ9A==}
     engines: {node: '>=12.22.0'}
 
-  ios-haptics@3.2.0:
-    resolution: {integrity: sha512-i34EcR9sF1JK8S5xoJRlK+beqZixDN7JeTFfKAQqQ5K2WBs9x7WxENLJu8IJsbfJOMdDIDP2B69g9azOGvlYtQ==}
-
   iron-webcrypto@1.2.1:
     resolution: {integrity: sha512-feOM6FaSr6rEABp/eDfVseKyTMDt+KGpeB35SkVn9Tyn0CqvVsY3EwI0v5i8nMHyJnzCIQf7nsy3p41TPkJZhg==}
 
@@ -2627,6 +2624,9 @@ packages:
   tagged-tag@1.0.0:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
+
+  tailwind-color-pairings@0.1.2:
+    resolution: {integrity: sha512-8iPG6LgOk8RnlocRk4ytNK5SLutu2/qwMMieMOrWk7tJulbETLDBw4Zy3HNvnOm8lX/DYkIvoYF5QPczSUj2cQ==}
 
   tailwindcss@4.3.3:
     resolution: {integrity: sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ==}
@@ -4472,8 +4472,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  ios-haptics@3.2.0: {}
-
   iron-webcrypto@1.2.1: {}
 
   is-core-module@2.17.0:
@@ -5284,6 +5282,10 @@ snapshots:
   supports-preserve-symlinks-flag@1.0.0: {}
 
   tagged-tag@1.0.0: {}
+
+  tailwind-color-pairings@0.1.2:
+    dependencies:
+      tailwindcss: 4.3.3
 
   tailwindcss@4.3.3: {}
 

@@ -12,7 +12,7 @@ export function AsyncView<T extends UseQueryResult>({
     case "pending":
       return (
         <div className="grid size-full grow cursor-wait place-items-center p-3">
-          <div className="size-9 animate-spin rounded-full border-4 border-zinc-300 border-t-zinc-600" />
+          <div className="size-9 animate-spin rounded-full border-4 border-zinc-300-700 border-t-zinc-600-400" />
         </div>
       );
 

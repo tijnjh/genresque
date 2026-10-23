@@ -26,7 +26,7 @@ export function VirtualGrid<T>({
     if (!parent) return;
 
     const update = () => {
-      const width = parent.clientWidth - 24;
+      const width = parent.clientWidth;
       const rem = parseFloat(
         getComputedStyle(document.documentElement).fontSize,
       );
@@ -69,7 +69,7 @@ export function VirtualGrid<T>({
   });
 
   return (
-    <div ref={parentRef} className="h-full scrollbar-none overflow-auto px-3">
+    <div ref={parentRef} className="h-full scrollbar-none overflow-auto">
       <ul
         ref={gridRef}
         className="relative"

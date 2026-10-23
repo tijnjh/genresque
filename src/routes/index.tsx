@@ -1,5 +1,6 @@
 import { AsyncView } from "../components/async-view";
 import { Header } from "../components/header";
+import { Main } from "../components/main";
 import { PlayButton } from "../components/play-button";
 import { VirtualGrid } from "../components/virtual-grid";
 import { useEnumToggle } from "../hooks/use-enum-toggle";
@@ -42,7 +43,7 @@ function RouteComponent() {
           <Input
             value={searchTerm ?? ""}
             onValueChange={(val) => setSearchTerm(val)}
-            className="h-9 min-w-0 grow bg-white px-3"
+            className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
           />
 
           <Button className="btn" onClick={filterType.cycle}>
@@ -56,11 +57,13 @@ function RouteComponent() {
       <AsyncView query={genresQuery}>
         {(genres) => {
           return (
-            <Genres
-              filterType={filterType.current}
-              searchTerm={searchTerm}
-              genres={genres}
-            />
+            <Main>
+              <Genres
+                filterType={filterType.current}
+                searchTerm={searchTerm}
+                genres={genres}
+              />
+            </Main>
           );
         }}
       </AsyncView>
@@ -115,7 +118,7 @@ function GenreTicker({ genre }: { genre: enoa.Genre }) {
         to="/genre/$slug"
         params={{ slug: genre.slug }}
         data-genre-label
-        className="group/ticker flex h-9 w-full min-w-0 items-center overflow-hidden bg-white text-left contain-[inline-size_paint] hover:bg-zinc-100 hover:underline"
+        className="group/ticker flex h-9 w-full min-w-0 items-center overflow-hidden bg-zinc-50-950 text-left contain-[inline-size_paint] hover:bg-zinc-100-900 hover:underline"
       >
         <span className="relative block w-max whitespace-nowrap motion-safe:group-[[data-overflow][data-visible]]/ticker:animate-genre-ticker">
           <PaddedStr />

@@ -13,7 +13,6 @@
     "ahooks": "^3.10.0",
     "cn": "^0.5.0",
     "domino": "^2.1.8",
-    "ios-haptics": "^3.2.0",
     "jotai": "^3.0.1",
     "ky": "^2.2.0",
     "nuqs": "^2.10.2",
@@ -35,6 +34,7 @@
     "oxc-transform-react": "^0.155.0",
     "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "tailwind-color-pairings": "^0.1.2",
     "tailwindcss": "^4.3.3",
     "vite": "latest"
   },

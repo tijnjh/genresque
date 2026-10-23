@@ -16,7 +16,7 @@ export function MiniPlayer() {
 
   return (
     <Activity mode={nowPlaying.url ? "visible" : "hidden"}>
-      <div className="fixed right-3 bottom-3 left-3 z-999 flex flex-col gap-3 border bg-white p-3 md:w-100!">
+      <div className="fixed right-3 bottom-3 left-3 z-999 flex flex-col gap-3 border bg-zinc-50-950 p-3 md:w-100!">
         <div className="flex items-center justify-between">
           <span title={cleanTitle} className="truncate">
             {cleanTitle}

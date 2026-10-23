@@ -12,3 +12,11 @@ export function fixRelativeUrl(url: string) {
 export function tryInferGenreSlugFromName(genreName: string) {
   return genreName.replace(/[^a-zA-Z]/g, "");
 }
+
+export function findSoundOfPlaylistId(
+  links: Array<{ text: string; href: string }>,
+) {
+  const fullUrl = links.find((l) => l.text === "playlist")?.href;
+  if (!fullUrl) return;
+  return fullUrl.replace("https://open.spotify.com/playlist/", "");
+}

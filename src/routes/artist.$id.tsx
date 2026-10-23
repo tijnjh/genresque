@@ -1,5 +1,7 @@
 import { AsyncView } from "../components/async-view";
 import { Header } from "../components/header";
+import { Main } from "../components/main";
+import { SpotifyWidget } from "../components/spotify-widget";
 import { VirtualGrid } from "../components/virtual-grid";
 import { getGenresByArtistId } from "../lib/server-functions";
 import { useQuery } from "@tanstack/react-query";
@@ -30,17 +32,22 @@ function RouteComponent() {
       />
       <AsyncView query={artistGenresQuery}>
         {(data) => (
-          <VirtualGrid entries={data}>
-            {(genre) => (
-              <Link
-                className="btn"
-                to="/genre/$slug"
-                params={{ slug: genre.slug }}
-              >
-                {genre.name}
-              </Link>
-            )}
-          </VirtualGrid>
+          <Main
+            leading={<SpotifyWidget id={params.id} type="artist" />}
+            trailing={
+              <VirtualGrid entries={data}>
+                {(genre) => (
+                  <Link
+                    className="btn"
+                    to="/genre/$slug"
+                    params={{ slug: genre.slug }}
+                  >
+                    {genre.name}
+                  </Link>
+                )}
+              </VirtualGrid>
+            }
+          />
         )}
       </AsyncView>
     </>
