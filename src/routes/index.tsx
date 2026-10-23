@@ -38,7 +38,7 @@ function RouteComponent() {
   return (
     <>
       <Header title="genresque">
-        <div className="flex grow gap-3 pr-3 md:max-w-md">
+        <div className="flex grow gap-3 px-3 md:max-w-md">
           <Input
             value={searchTerm ?? ""}
             onValueChange={(val) => setSearchTerm(val)}
