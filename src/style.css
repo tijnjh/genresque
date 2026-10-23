@@ -9,3 +9,30 @@
     }
   }
 }
+
+dt {
+  @apply border-b whitespace-nowrap opacity-50;
+}
+
+dd {
+  @apply text-right;
+}
+
+@utility btn {
+  @apply flex h-9 items-center gap-2 bg-white px-3 hover:bg-zinc-100 active:translate-y-px;
+}
+
+@utility btn-inverse {
+  @apply btn bg-black text-white hover:bg-zinc-800;
+}
+
+input,
+.btn,
+.btn-inverse {
+  @apply ring-blue-500 outline-none focus-visible:ring-2;
+}
+
+a.btn,
+a.btn-inverse {
+  @apply hover:underline;
+}

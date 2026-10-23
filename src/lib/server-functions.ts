@@ -1,41 +1,70 @@
-import { createServerFn } from "@tanstack/react-start";
-import { Scrappy } from "./scrappy";
 import genres from "../data/genres.gen.json" with { type: "json" };
+import { everynoiseUrl } from "./constants";
+import { Scrappy } from "./scrappy";
+import { genreNameToSlug, tryInferGenreSlugFromName } from "./utils";
+import { createServerFn } from "@tanstack/react-start";
+import ky from "ky";
+import * as v from "valibot";
 
 export const getAllGenres = createServerFn().handler(() => {
   return genres;
 });
 
-import * as v from "valibot";
-import { genreNameToSlug } from "./utils";
-
 export const getGenreDetails = createServerFn()
   .validator(v.string())
   .handler(async ({ data }) => {
     const genreSlug = genreNameToSlug(data);
-    // const html = await ky.get().text();
-    // const dom = createDocument(html);
-    // const canvasEl = dom.querySelector('.canvas');
 
     const scrappy = await Scrappy.init(
-      `https://everynoise.com/engenremap-${genreSlug}.html`,
+      `${everynoiseUrl}/engenremap-${genreSlug}.html`,
     );
+
+    const titleEl = scrappy.find(".title");
+
+    const genreName = scrappy
+      .find(".title")
+      ?.el.childNodes[1].textContent?.slice(3, -3);
 
     const artists = scrappy
       .find(".canvas")
       ?.findAll(".genre")
-      .map((a) => ({
-        artistName: a.childNodes[0].textContent,
-        fontSize: a.style.getPropertyValue("font-size"),
+      .map((el) => ({
+        artistName: el.childNodes[0].textContent,
+        fontSize: el.style.getPropertyValue("font-size"),
+        id: el.querySelector<HTMLAnchorElement>("a")?.href?.slice(23),
+        preview: {
+          url: el.getAttribute("preview_url"),
+          title: el.getAttribute("title"),
+        },
       }));
 
-    const links = scrappy
-      .find(".title")
-      ?.findAll<HTMLAnchorElement>("a")
-      .map((e) => ({
-        text: e.textContent,
-        href: e.href,
-      }));
+    const links = titleEl?.findAll<HTMLAnchorElement>("a").map((e) => ({
+      text: e.textContent,
+      href: e.href,
+    }));
 
-    return { artists, links };
+    return { genreName, artists, links };
+  });
+
+export const lookup = createServerFn()
+  .validator(v.string())
+  .handler(async ({ data }) => {
+    const scrappy = await Scrappy.init(
+      `${everynoiseUrl}/lookup.cgi?who=${data}`,
+    );
+
+    console.log(scrappy.find("body"));
+  });
+
+export const getGenresByArtistId = createServerFn()
+  .validator(v.string())
+  .handler(async ({ data }) => {
+    const res = await ky
+      .get(`${everynoiseUrl}/api/${data}`)
+      .text()
+      .then(JSON.parse);
+    return (Object.values(res)[0] as string[]).map((g) => ({
+      name: g,
+      slug: tryInferGenreSlugFromName(g),
+    }));
   });
