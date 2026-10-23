@@ -94,7 +94,7 @@ function Genres({
       default:
         return undefined!; // trust me bro its exhaustive;
     }
-  }, [searchTerm, filterType]);
+  }, [searchTerm, filterType, genres]);
 
   const gridRef = useGenreTickers(genres);
 

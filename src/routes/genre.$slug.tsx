@@ -3,7 +3,6 @@ import { Header } from "../components/header";
 import { PlayButton } from "../components/play-button";
 import { VirtualGrid } from "../components/virtual-grid";
 import { getGenreDetails } from "../lib/server-functions";
-import { fixRelativeUrl } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 

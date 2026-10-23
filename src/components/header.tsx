@@ -32,7 +32,7 @@ export function Header({
       {children ??
         (links?.length && (
           <ul className="flex scrollbar-none gap-3 overflow-x-auto">
-            {links?.map((link, i) => (
+            {links?.map((link) => (
               <li className="first:ml-3 last:mr-3" key={link.href}>
                 <a
                   href={fixRelativeUrl(link.href)}
