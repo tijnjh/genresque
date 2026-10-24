@@ -81,7 +81,7 @@ function RouteComponent() {
         trailing={
           <AsyncView query={albumTracksQuery}>
             {(tracks) => (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 pb-32">
                 {tracks.map((track) => (
                   <Chip
                     key={track.trackId}

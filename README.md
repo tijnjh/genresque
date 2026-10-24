@@ -1,11 +1,20 @@
-most minimal tanstack start setup
+music explorer client thingy
 
-```sh
-npx degit tijnjh/hello-tanstack-start my-start-app
+uses both the spotify and itunes api for some things
 
-cd my-start-app
+initially started as a better version of everynoise.com, like a music genre explorer, but added some more stuff on top
 
-npm install
+NOT VIBECODED -- 100% human slop
 
-npm run dev --open
-```
+yes i know it looks like shit
+
+probably buggy too
+
+### stack
+
+- react
+- tanstack start
+- tanstack query
+- tanstack virtual
+- base ui
+- jotai
