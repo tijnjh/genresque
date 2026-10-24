@@ -27,7 +27,7 @@ function RouteComponent() {
   });
 
   const albumTracksQuery = useQuery({
-    queryKey: ["itunes-album-tracks"],
+    queryKey: ["itunes-album-tracks", itunesId],
     queryFn: async () =>
       await itunes
         .lookup("id", Number(itunesId), {
