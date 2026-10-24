@@ -1,13 +1,14 @@
 import { AsyncView } from "../components/async-view";
+import { Chip } from "../components/chip";
 import { Header } from "../components/header";
 import { Main } from "../components/main";
 import { PlayButton } from "../components/play-button";
 import { SpotifyWidget } from "../components/spotify-widget";
 import { VirtualGrid } from "../components/virtual-grid";
-import { getGenreDetails } from "../lib/server-functions";
+import { getGenreDetails } from "../lib/api/server-functions";
 import { findSoundOfPlaylistId } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/genre/$slug")({
   component: RouteComponent,
@@ -42,22 +43,20 @@ function RouteComponent() {
               trailing={
                 <VirtualGrid entries={genre.artists}>
                   {(artist) => (
-                    <div className="flex" key={artist.artistName}>
-                      <Link
-                        to="/artist/$id"
-                        className="btn grow overflow-hidden"
-                        params={{ id: artist.id! }}
-                        title={artist.artistName!}
-                      >
-                        <span className="truncate">{artist.artistName}</span>
-                      </Link>
-
-                      <PlayButton
-                        className="btn-inverse size-9 justify-center"
-                        title={artist.preview.title!}
-                        track={artist.preview}
-                      />
-                    </div>
+                    <Chip
+                      key={artist.artistName}
+                      to="/artist/$id"
+                      params={{ id: artist.id }}
+                      trailing={
+                        <PlayButton
+                          className="btn-inverse size-9 justify-center"
+                          title={artist.preview.title!}
+                          track={artist.preview}
+                        />
+                      }
+                    >
+                      {artist.artistName!}
+                    </Chip>
                   )}
                 </VirtualGrid>
               }

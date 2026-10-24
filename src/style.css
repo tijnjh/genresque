@@ -1,16 +1,6 @@
 @import "tailwindcss";
 @import "tailwind-color-pairings";
 
-@theme inline {
-  --animate-genre-ticker: genre-ticker var(--ticker-duration) linear infinite;
-
-  @keyframes genre-ticker {
-    to {
-      transform: translateX(var(--ticker-distance));
-    }
-  }
-}
-
 dt {
   @apply border-b whitespace-nowrap opacity-50;
 }

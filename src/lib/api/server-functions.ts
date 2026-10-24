@@ -1,14 +1,13 @@
-import genres from "../data/genres.gen.json" with { type: "json" };
-import { everynoiseUrl } from "./constants";
-import { Scrappy } from "./scrappy";
-import { genreNameToSlug, tryInferGenreSlugFromName } from "./utils";
+import genres from "../../data/genres.gen.json" with { type: "json" };
+import { everynoiseUrl } from "../constants";
+import { Scrappy } from "../scrappy";
+import { genreNameToSlug, tryInferGenreSlugFromName } from "../utils";
+import { $spotify } from "./clients";
 import { createServerFn } from "@tanstack/react-start";
 import ky from "ky";
 import * as v from "valibot";
 
-export const getAllGenres = createServerFn().handler(() => {
-  return genres;
-});
+export const getAllGenres = createServerFn().handler(() => genres);
 
 export const getGenreDetails = createServerFn()
   .validator(v.string())
@@ -63,8 +62,46 @@ export const getGenresByArtistId = createServerFn()
       .get(`${everynoiseUrl}/api/${data}`)
       .text()
       .then(JSON.parse);
-    return (Object.values(res)[0] as string[]).map((g) => ({
-      name: g,
-      slug: tryInferGenreSlugFromName(g),
-    }));
+
+    return (
+      (Object.values(res)[0] as string[])?.map((g) => ({
+        name: g,
+        slug: tryInferGenreSlugFromName(g),
+      })) ?? []
+    );
+  });
+
+export const lookupArtists = createServerFn()
+  .validator(v.string())
+  .handler(async ({ data }) => {
+    const spotifyRes = await $spotify("/search", {
+      searchParams: {
+        type: "artist",
+        q: data,
+        limit: 50,
+      },
+    }).json(
+      v.object({
+        artists: v.object({
+          items: v.array(
+            v.object({
+              name: v.string(),
+              id: v.string(),
+              images: v.array(
+                v.object({
+                  url: v.string(),
+                }),
+              ),
+            }),
+          ),
+        }),
+      }),
+    );
+
+    // filter out low quality "artists"
+    const filteredArtists = spotifyRes.artists.items.filter(
+      (i) => !!i.images.length,
+    );
+
+    return filteredArtists;
   });

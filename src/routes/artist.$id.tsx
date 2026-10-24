@@ -1,11 +1,12 @@
 import { AsyncView } from "../components/async-view";
+import { Chip } from "../components/chip";
 import { Header } from "../components/header";
 import { Main } from "../components/main";
 import { SpotifyWidget } from "../components/spotify-widget";
 import { VirtualGrid } from "../components/virtual-grid";
-import { getGenresByArtistId } from "../lib/server-functions";
+import { getGenresByArtistId } from "../lib/api/server-functions";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/artist/$id")({
   component: RouteComponent,
@@ -37,13 +38,9 @@ function RouteComponent() {
             trailing={
               <VirtualGrid entries={data}>
                 {(genre) => (
-                  <Link
-                    className="btn"
-                    to="/genre/$slug"
-                    params={{ slug: genre.slug }}
-                  >
+                  <Chip to="/genre/$slug" params={{ slug: genre.slug }}>
                     {genre.name}
-                  </Link>
+                  </Chip>
                 )}
               </VirtualGrid>
             }

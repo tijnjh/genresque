@@ -1,7 +1,7 @@
-import { getAllGenres } from "./server-functions";
+import { getAllGenres } from "./api/server-functions";
 
 declare global {
-  namespace enoa {
+  namespace Everynoise {
     type Genre = Awaited<ReturnType<typeof getAllGenres>>[number];
   }
 }

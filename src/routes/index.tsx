@@ -1,14 +1,14 @@
 import { AsyncView } from "../components/async-view";
+import { Chip } from "../components/chip";
 import { Header } from "../components/header";
 import { Main } from "../components/main";
 import { PlayButton } from "../components/play-button";
 import { VirtualGrid } from "../components/virtual-grid";
 import { useEnumToggle } from "../hooks/use-enum-toggle";
-import { useGenreTickers } from "../hooks/use-genre-tickers";
-import { getAllGenres } from "../lib/server-functions";
+import { getAllGenres } from "../lib/api/server-functions";
 import { Button, Input } from "@base-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQueryState } from "nuqs";
 import { useMemo } from "react";
 
@@ -30,8 +30,7 @@ function RouteComponent() {
     defaultValue: "genre",
   });
 
-  // implement lookup after i figure out how to get the slug from the artist id without fetching spotify
-  const filterType = useEnumToggle(["genre", /* "lookup",*/ "preview"], {
+  const filterType = useEnumToggle(["genre", "preview", "lookup"], {
     onUpdate: setType,
     defaultValue: type ?? "genre",
   });
@@ -39,19 +38,38 @@ function RouteComponent() {
   return (
     <>
       <Header title="genresque">
-        <div className="flex grow gap-3 px-3 md:max-w-md">
-          <Input
-            value={searchTerm ?? ""}
-            onValueChange={(val) => setSearchTerm(val)}
-            className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
-          />
-
+        <form
+          className="flex grow gap-3 px-3 md:max-w-md"
+          action="/lookup"
+          onSubmit={(e) => {
+            if (!searchTerm.trim()) e.preventDefault();
+            if (filterType.current !== "lookup") e.preventDefault();
+          }}
+        >
           <Button className="btn" onClick={filterType.cycle}>
             {filterType.current}
           </Button>
 
-          <Button className="btn-inverse size-9 justify-center">→</Button>
-        </div>
+          <Input
+            value={searchTerm ?? ""}
+            onValueChange={(val) => setSearchTerm(val)}
+            className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
+            name="q"
+            placeholder={
+              {
+                genre: "filter genre names",
+                preview: "filter genre preview track name",
+                lookup: "look up an artist",
+              }[filterType.current]
+            }
+          />
+
+          {filterType.current === "lookup" && (
+            <Button type="submit" className="btn-inverse size-9 justify-center">
+              →
+            </Button>
+          )}
+        </form>
       </Header>
 
       <AsyncView query={genresQuery}>
@@ -76,7 +94,7 @@ function Genres({
   searchTerm,
   filterType,
 }: {
-  genres: enoa.Genre[];
+  genres: Everynoise.Genre[];
   searchTerm: string;
   filterType: string;
 }) {
@@ -95,47 +113,27 @@ function Genres({
           : genres;
 
       default:
-        return undefined!; // trust me bro its exhaustive;
+        return [];
     }
   }, [searchTerm, filterType, genres]);
 
-  const gridRef = useGenreTickers(genres);
-
   return (
-    <VirtualGrid entries={filteredGenres} gridRef={gridRef}>
-      {(genre) => <GenreTicker genre={genre} />}
+    <VirtualGrid entries={filteredGenres}>
+      {(genre) => (
+        <Chip
+          to="/genre/$slug"
+          params={{ slug: genre.slug }}
+          trailing={
+            <PlayButton
+              title={genre.preview.title}
+              className="btn-inverse size-9 shrink-0 justify-center"
+              track={genre.preview}
+            />
+          }
+        >
+          {genre.name}
+        </Chip>
+      )}
     </VirtualGrid>
-  );
-}
-
-function GenreTicker({ genre }: { genre: enoa.Genre }) {
-  // the marquee string and the normal one have to be the exact same width otherwise it will glitch ;-;
-  const PaddedStr = () => <span className="px-3">{genre.name}</span>;
-
-  return (
-    <div className="flex items-center">
-      <Link
-        to="/genre/$slug"
-        params={{ slug: genre.slug }}
-        data-genre-label
-        className="group/ticker flex h-9 w-full min-w-0 items-center overflow-hidden bg-zinc-50-950 text-left contain-[inline-size_paint] hover:bg-zinc-100-900 hover:underline"
-      >
-        <span className="relative block w-max whitespace-nowrap motion-safe:group-[[data-overflow][data-visible]]/ticker:animate-genre-ticker">
-          <PaddedStr />
-          <span
-            className="absolute top-0 left-[calc(100%+24px)] hidden group-[[data-overflow][data-visible]]/ticker:block"
-            aria-hidden="true"
-          >
-            <PaddedStr />
-          </span>
-        </span>
-      </Link>
-
-      <PlayButton
-        title={genre.preview.title}
-        className="btn-inverse size-9 shrink-0 justify-center"
-        track={genre.preview}
-      />
-    </div>
   );
 }
