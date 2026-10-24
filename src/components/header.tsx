@@ -21,7 +21,7 @@ export function Header({
   const location = useLocation();
 
   return (
-    <header className="flex justify-between overflow-hidden max-md:flex-col max-md:pb-3 md:items-center">
+    <header className="sticky top-0 z-9999 flex justify-between overflow-hidden bg-zinc-200-800 max-md:flex-col max-md:pb-3 md:items-center">
       <div className="flex items-center gap-3 p-3">
         {![location.pathname, backHref].includes("/") && (
           <Link to="/" className="btn">
