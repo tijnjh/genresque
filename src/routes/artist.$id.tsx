@@ -3,7 +3,6 @@ import { Chip } from "../components/chip";
 import { Header } from "../components/header";
 import { Main } from "../components/main";
 import { SpotifyWidget } from "../components/spotify-widget";
-import { VirtualGrid } from "../components/virtual-grid";
 import {
   getArtistDetailsById,
   getGenresByArtistId,
@@ -82,7 +81,11 @@ function RouteComponent() {
               {(data) => (
                 <div className="cool-grid">
                   {data.map((genre) => (
-                    <Chip to="/genre/$slug" params={{ slug: genre.slug }}>
+                    <Chip
+                      to="/genre/$slug"
+                      key={genre.slug}
+                      params={{ slug: genre.slug }}
+                    >
                       {genre.name}
                     </Chip>
                   ))}
@@ -99,6 +102,7 @@ function RouteComponent() {
               <div className="cool-grid h-fit">
                 {albums.map((album) => (
                   <Chip
+                    key={album.collectionId}
                     leading={
                       <img src={album.artworkUrl60} className="size-9" />
                     }

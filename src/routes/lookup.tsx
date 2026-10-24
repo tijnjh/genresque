@@ -7,7 +7,7 @@ import { lookupArtists } from "../lib/api/server-functions";
 import { Button, Input } from "@base-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as v from "valibot";
 
 export const Route = createFileRoute("/lookup")({
@@ -29,6 +29,8 @@ function RouteComponent() {
 
   const navigate = Route.useNavigate();
 
+  const [searchTerm, setSearchTerm] = useState(q);
+
   // scuffed asl
   if (lucky) {
     if (!artistsQuery.data?.length) {
@@ -41,8 +43,6 @@ function RouteComponent() {
       });
     }
   }
-
-  const [searchTerm, setSearchTerm] = useState(q);
 
   return (
     <>

@@ -3,11 +3,9 @@ import { Chip } from "../components/chip";
 import { Header } from "../components/header";
 import { Main } from "../components/main";
 import { PlayButton } from "../components/play-button";
-import { VirtualGrid } from "../components/virtual-grid";
 import { fmt } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
 import * as itunes from "itunes-store-api";
 
 export const Route = createFileRoute("/album/$itunesId")({
@@ -86,6 +84,7 @@ function RouteComponent() {
               <div className="flex flex-col gap-3">
                 {tracks.map((track) => (
                   <Chip
+                    key={track.trackId}
                     trailing={
                       <PlayButton
                         className="btn-inverse size-9 shrink-0 justify-center"

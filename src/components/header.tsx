@@ -1,5 +1,5 @@
 import { fixRelativeUrl } from "../lib/utils";
-import { Link, useLocation, useRouter } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { ReactNode } from "react";
 import { MergeExclusive } from "type-fest";
 
