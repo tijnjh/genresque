@@ -46,7 +46,7 @@ function RouteComponent() {
   return (
     <>
       <Header
-        title="Album info"
+        title="album info"
         backHref={`/lookup?lucky=true&q=${itunesAlbumDetailsQuery.data?.artistName}`}
       />
 
