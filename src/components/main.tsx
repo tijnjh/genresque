@@ -12,8 +12,8 @@ export function Main({
   return children ? (
     <main className="overflow-hidden px-3">{children}</main>
   ) : (
-    <main className="h-500px grid h-full grid-cols-1 gap-3 overflow-hidden px-3 md:grid-cols-[auto_1fr]">
-      <div className="pb-3 max-md:hidden">{leading}</div>
+    <main className="md:h-500px grid h-full grid-cols-1 gap-3 px-3 md:grid-cols-[auto_1fr] md:overflow-hidden">
+      <div className="flex flex-col gap-3 pb-3">{leading}</div>
       {trailing}
     </main>
   );

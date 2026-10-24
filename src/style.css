@@ -27,3 +27,7 @@ a.btn,
 a.btn-inverse {
   @apply hover:underline;
 }
+
+@utility cool-grid {
+  @apply grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3;
+}

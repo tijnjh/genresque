@@ -20,3 +20,29 @@ export function findSoundOfPlaylistId(
   if (!fullUrl) return;
   return fullUrl.replace("https://open.spotify.com/playlist/", "");
 }
+
+export function fmt(
+  as: "date",
+  subject: Date,
+  opts?: Intl.DateTimeFormatOptions,
+): string;
+export function fmt(
+  as: "number",
+  subject: number,
+  opts?: Intl.NumberFormatOptions,
+): string;
+export function fmt(
+  as: "number" | "date",
+  subject: number | Date,
+  opts?: object,
+): string {
+  const locale = "en";
+
+  switch (as) {
+    case "date":
+      return Intl.DateTimeFormat(locale, opts).format(subject);
+
+    case "number":
+      return Intl.NumberFormat(locale, opts).format(subject as number);
+  }
+}

@@ -105,3 +105,19 @@ export const lookupArtists = createServerFn()
 
     return filteredArtists;
   });
+
+export const getArtistDetailsById = createServerFn()
+  .validator(v.string())
+  .handler(async ({ data }) => {
+    const res = await $spotify(`artists/${data}`).json(
+      v.object({
+        name: v.string(),
+        followers: v.object({
+          total: v.number(),
+        }),
+        id: v.string(),
+      }),
+    );
+
+    return res;
+  });

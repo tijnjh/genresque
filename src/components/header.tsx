@@ -1,5 +1,5 @@
 import { fixRelativeUrl } from "../lib/utils";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import { ReactNode } from "react";
 import { MergeExclusive } from "type-fest";
 
@@ -18,9 +18,16 @@ export function Header({
   // we hide this button cus its too wide and doesn't provide much functionality in this case
   links = links?.filter((l) => l.text !== "Every Noise at Once");
 
+  const location = useLocation();
+
   return (
     <header className="flex justify-between overflow-hidden max-md:flex-col max-md:pb-3 md:items-center">
       <div className="flex items-center gap-3 p-3">
+        {![location.pathname, backHref].includes("/") && (
+          <Link to="/" className="btn">
+            home
+          </Link>
+        )}
         {backHref && (
           <Link to={backHref} className="btn-inverse size-9 justify-center">
             ←

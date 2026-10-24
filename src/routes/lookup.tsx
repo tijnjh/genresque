@@ -7,21 +7,40 @@ import { lookupArtists } from "../lib/api/server-functions";
 import { Button, Input } from "@base-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as v from "valibot";
 
 export const Route = createFileRoute("/lookup")({
-  validateSearch: v.object({ q: v.string() }),
+  validateSearch: v.object({
+    q: v.string(),
+    // like googles "feeling lucky" button it will auto open the first result
+    lucky: v.optional(v.boolean()),
+  }),
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { q } = Route.useSearch();
+  const { q, lucky } = Route.useSearch();
 
   const artistsQuery = useQuery({
     queryKey: ["lookup-artists", q],
     queryFn: async () => lookupArtists({ data: q }),
   });
+
+  const navigate = Route.useNavigate();
+
+  // scuffed asl
+  if (lucky) {
+    if (!artistsQuery.data?.length) {
+      return;
+    } else {
+      navigate({
+        to: "/artist/$id",
+        params: { id: artistsQuery.data[0].id },
+        replace: true,
+      });
+    }
+  }
 
   const [searchTerm, setSearchTerm] = useState(q);
 
