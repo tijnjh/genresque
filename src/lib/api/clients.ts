@@ -6,12 +6,17 @@ export const $everynoise = ky.create({
   baseUrl: everynoiseUrl,
 });
 
-const spotifyToken = await obtainSpotifyToken();
-
 export const $spotify = ky.create({
   baseUrl: "https://api.spotify.com",
   prefix: "v1",
-  headers: {
-    Authorization: `Bearer ${spotifyToken}`,
+  hooks: {
+    beforeRequest: [
+      async ({ request }) => {
+        request.headers.set(
+          "Authorization",
+          `Bearer ${await obtainSpotifyToken()}`,
+        );
+      },
+    ],
   },
 });
