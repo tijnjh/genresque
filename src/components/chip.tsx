@@ -27,8 +27,9 @@ export function Chip({
 
       <Link
         {...props}
+        draggable={false}
         className={cn(
-          "min-w-0 grow items-center px-0",
+          "min-w-0 grow items-center px-0 [-webkit-touch-callout:none]",
           inverse ? "btn-inverse" : "btn",
           className,
         )}

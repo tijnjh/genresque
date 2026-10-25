@@ -46,12 +46,12 @@ function RootComponent() {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <NuqsAdapter>
-          <html lang="en">
+          <html lang="en" className="overscroll-none">
             <head>
               <HeadContent />
             </head>
 
-            <body className="relative isolate touch-manipulation bg-zinc-200-800 text-black scheme-light-dark dark:text-white">
+            <body className="relative isolate touch-manipulation overscroll-none bg-zinc-200-800 text-black scheme-light-dark select-none dark:text-white">
               <div className="grid h-dvh grid-cols-1 overflow-hidden max-md:grid-rows-[1fr_min-content] md:grid-cols-[auto_1fr]">
                 <Aside />
 
