@@ -48,7 +48,7 @@ function RouteComponent() {
         header={{
           title: "artist lookup",
           children: (
-            <form className="flex grow gap-3 px-3 md:max-w-md" action="/lookup">
+            <form className="flex grow gap-3 md:max-w-md" action="/lookup">
               <Input
                 className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
                 name="q"
