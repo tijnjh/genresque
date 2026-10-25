@@ -5,10 +5,12 @@ import { SpotifyWidget } from "../components/spotify-widget";
 import {
   getArtistDetailsById,
   getGenresByArtistId,
+  proxyItunesLookup,
+  proxyItunesSearch,
 } from "../lib/api/server-functions";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import * as itunes from "itunes-store-api";
+import type * as itunes from "itunes-store-api";
 
 export const Route = createFileRoute("/artist/$id")({
   component: RouteComponent,
@@ -72,24 +74,32 @@ function ArtistReleasesList({ artistName }: { artistName: string }) {
   const artistAlbumsQuery = useQuery({
     queryKey: ["artist-itunes-albums", artistName],
     queryFn: async () => {
-      const artistItunesId = await itunes
-        .search(artistName, {
-          media: "music",
-          entity: "musicArtist",
-        })
-        .then((r) => r.results[0]?.artistId);
+      const artistItunesId = await proxyItunesSearch({
+        data: {
+          query: artistName,
+          options: { media: "music", entity: "musicArtist" },
+        },
+      }).then((r) => (r.results[0] as itunes.ResultMusicArtist)?.artistId); // fixme - properly type this
 
       if (!artistItunesId)
         throw new Error(
           `could't find id for artist: -- ${artistName} -- on itunes`,
         );
 
-      return await itunes
-        .lookup("id", artistItunesId, {
-          media: "music",
-          entity: "album",
-        })
-        .then((r) => r.results.filter((a) => a.wrapperType === "collection"));
+      return await proxyItunesLookup({
+        data: {
+          type: "id",
+          query: artistItunesId,
+          options: {
+            media: "music",
+            entity: "album",
+          },
+        },
+      }).then((r) =>
+        (r.results as itunes.ResultAlbum[]).filter(
+          (a) => a.wrapperType === "collection",
+        ),
+      );
     },
   });
 

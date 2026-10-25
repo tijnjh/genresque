@@ -9,10 +9,6 @@ export function fixRelativeUrl(url: string) {
   return everynoiseUrl + url;
 }
 
-export function tryInferGenreSlugFromName(genreName: string) {
-  return genreName.replace(/[^a-zA-Z]/g, "");
-}
-
 export function findSoundOfPlaylistId(
   links: Array<{ text: string; href: string }>,
 ) {

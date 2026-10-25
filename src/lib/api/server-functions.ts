@@ -1,9 +1,10 @@
 import genres from "../../data/genres.gen.json" with { type: "json" };
 import { everynoiseUrl } from "../constants";
 import { Scrappy } from "../scrappy";
-import { genreNameToSlug, tryInferGenreSlugFromName } from "../utils";
+import { genreNameToSlug } from "../utils";
 import { $spotify } from "./clients";
 import { createServerFn } from "@tanstack/react-start";
+import * as itunes from "itunes-store-api";
 import ky from "ky";
 import * as v from "valibot";
 
@@ -80,7 +81,7 @@ export const getGenresByArtistId = createServerFn()
     return (
       (Object.values(res)[0] as string[])?.map((g) => ({
         name: g,
-        slug: tryInferGenreSlugFromName(g),
+        slug: genreNameToSlug(g),
       })) ?? []
     );
   });
@@ -134,4 +135,39 @@ export const getArtistDetailsById = createServerFn()
     );
 
     return res;
+  });
+
+// i wanted to fetch these client side but apple added some crazy redirect stuff with this api on on ios so i have to do it server side sadly
+// maybe make it conditional based on the platform at some point
+
+export const proxyItunesLookup = createServerFn()
+  .validator(
+    v.object({
+      type: v.picklist([
+        "amgAlbumId",
+        "amgArtistId",
+        "amgVideoId",
+        "id",
+        "isbn",
+        "upc",
+        "url",
+      ]),
+      query: v.union([v.string(), v.number()]),
+      options: v.record(v.string(), v.string()),
+    }),
+  )
+  .handler(async ({ data }) => {
+    // @ts-expect-error it has some crazy signature which im lowkey not going to recreate
+    return await itunes.lookup(data.type, data.query, data.options);
+  });
+
+export const proxyItunesSearch = createServerFn()
+  .validator(
+    v.object({
+      query: v.string(),
+      options: v.record(v.string(), v.string()),
+    }),
+  )
+  .handler(async ({ data }) => {
+    return await itunes.search(data.query, data.options);
   });
