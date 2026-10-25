@@ -8,7 +8,7 @@
     "rewriteRelativeImportExtensions": true,
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "allowJs": true,
     "checkJs": true,
     "strict": true,

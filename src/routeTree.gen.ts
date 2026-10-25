@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LookupRouteImport } from './routes/lookup'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as TestRouteImport } from './routes/test'
 import { Route as AlbumItunesIdRouteImport } from './routes/album.$itunesId'
 import { Route as ArtistIdRouteImport } from './routes/artist.$id'
 import { Route as GenreSlugRouteImport } from './routes/genre.$slug'
@@ -29,6 +30,11 @@ const LookupRoute = LookupRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestRoute = TestRouteImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AlbumItunesIdRoute = AlbumItunesIdRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/lookup': typeof LookupRoute
   '/search': typeof SearchRoute
+  '/test': typeof TestRoute
   '/album/$itunesId': typeof AlbumItunesIdRoute
   '/artist/$id': typeof ArtistIdRoute
   '/genre/$slug': typeof GenreSlugRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/lookup': typeof LookupRoute
   '/search': typeof SearchRoute
+  '/test': typeof TestRoute
   '/album/$itunesId': typeof AlbumItunesIdRoute
   '/artist/$id': typeof ArtistIdRoute
   '/genre/$slug': typeof GenreSlugRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/lookup': typeof LookupRoute
   '/search': typeof SearchRoute
+  '/test': typeof TestRoute
   '/album/$itunesId': typeof AlbumItunesIdRoute
   '/artist/$id': typeof ArtistIdRoute
   '/genre/$slug': typeof GenreSlugRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/lookup'
     | '/search'
+    | '/test'
     | '/album/$itunesId'
     | '/artist/$id'
     | '/genre/$slug'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/lookup'
     | '/search'
+    | '/test'
     | '/album/$itunesId'
     | '/artist/$id'
     | '/genre/$slug'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/lookup'
     | '/search'
+    | '/test'
     | '/album/$itunesId'
     | '/artist/$id'
     | '/genre/$slug'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LookupRoute: typeof LookupRoute
   SearchRoute: typeof SearchRoute
+  TestRoute: typeof TestRoute
   AlbumItunesIdRoute: typeof AlbumItunesIdRoute
   ArtistIdRoute: typeof ArtistIdRoute
   GenreSlugRoute: typeof GenreSlugRoute
@@ -129,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/album/$itunesId': {
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LookupRoute: LookupRoute,
   SearchRoute: SearchRoute,
+  TestRoute: TestRoute,
   AlbumItunesIdRoute: AlbumItunesIdRoute,
   ArtistIdRoute: ArtistIdRoute,
   GenreSlugRoute: GenreSlugRoute,
