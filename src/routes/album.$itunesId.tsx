@@ -1,15 +1,22 @@
 import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
-import { Header } from "../components/header";
-import { Main } from "../components/main";
+import { Layout } from "../components/layout";
 import { PlayButton } from "../components/play-button";
 import { fmt } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import * as itunes from "itunes-store-api";
+import * as v from "valibot";
 
 export const Route = createFileRoute("/album/$itunesId")({
   component: RouteComponent,
+  params: {
+    parse: v.parser(
+      v.object({
+        itunesId: v.pipe(v.string(), v.toNumber()),
+      }),
+    ),
+  },
 });
 
 function RouteComponent() {
@@ -19,7 +26,7 @@ function RouteComponent() {
     queryKey: ["itunes-album-details", itunesId],
     queryFn: async () =>
       await itunes
-        .lookup("id", Number(itunesId), {
+        .lookup("id", itunesId, {
           media: "music",
           entity: "album",
         })
@@ -30,7 +37,7 @@ function RouteComponent() {
     queryKey: ["itunes-album-tracks", itunesId],
     queryFn: async () =>
       await itunes
-        .lookup("id", Number(itunesId), {
+        .lookup("id", itunesId, {
           media: "music",
           entity: "song",
         })
@@ -42,67 +49,80 @@ function RouteComponent() {
   });
 
   return (
-    <>
-      <Header
-        title="album info"
-        backHref={`/lookup?lucky=true&q=${itunesAlbumDetailsQuery.data?.artistName}`}
-      />
+    <Layout
+      header={{
+        title: itunesAlbumDetailsQuery.data?.collectionName ?? "",
+        backHref: `/lookup?lucky=true&q=${itunesAlbumDetailsQuery.data?.artistName}`,
+      }}
 
-      <Main
-        leading={
-          <div className="flex flex-col gap-3 md:w-72">
-            <AsyncView query={itunesAlbumDetailsQuery}>
-              {(album) => (
-                <>
-                  <img
-                    src={album.artworkUrl100}
-                    className="aspect-square w-full"
-                  />
-                  <h1 className="text-3xl font-semibold">
-                    {album.collectionName}
-                  </h1>
+      leading={
+        <div className="flex flex-col gap-3">
+          <AsyncView query={itunesAlbumDetailsQuery}>
+            {(album) => (
+              <>
+                <img
+                  src={album.artworkUrl100}
+                  className="aspect-square w-full"
+                />
 
-                  <Chip
-                    to="/lookup"
-                    search={{ lucky: true, q: album.artistName }}
-                  >
-                    {album.artistName}
-                  </Chip>
+                <Chip
+                  to="/lookup"
+                  search={{ lucky: true, q: album.artistName }}
+                >
+                  {album.artistName}
+                </Chip>
 
-                  {fmt("date", new Date(album.releaseDate), {
-                    dateStyle: "long",
-                  })}
-                </>
-              )}
-            </AsyncView>
-          </div>
-        }
+                {fmt("date", new Date(album.releaseDate), {
+                  dateStyle: "long",
+                })}
 
-        trailing={
-          <AsyncView query={albumTracksQuery}>
-            {(tracks) => (
-              <div className="flex flex-col gap-3 pb-32">
-                {tracks.map((track) => (
-                  <Chip
-                    key={track.trackId}
-                    trailing={
-                      <PlayButton
-                        className="btn-inverse size-9 shrink-0 justify-center"
-                        track={{
-                          title: track.trackName,
-                          url: track.previewUrl,
-                        }}
-                      />
-                    }
-                  >
-                    {track.trackName}
-                  </Chip>
-                ))}
-              </div>
+                <p title="the itunes genre is always very non-specific">
+                  itunes genre: {album.primaryGenreName}
+                </p>
+              </>
             )}
           </AsyncView>
-        }
-      />
-    </>
+        </div>
+      }
+
+      trailing={
+        <AsyncView query={albumTracksQuery}>
+          {(tracks) => (
+            <div className="flex h-full flex-col gap-3 overflow-x-hidden overflow-y-auto pb-32">
+              {tracks.map((track) => (
+                <Chip
+                  key={track.trackId}
+                  hash={String(track.trackId)}
+                  trailing={
+                    <PlayButton
+                      className="btn-inverse size-9 shrink-0 justify-center"
+                      track={{
+                        title: track.trackName,
+                        url: track.previewUrl,
+                      }}
+                    />
+                  }
+                >
+                  {track.trackName}
+                </Chip>
+              ))}
+            </div>
+          )}
+        </AsyncView>
+      }
+    />
   );
+
+  // return (
+  //   <>
+  //     <Header
+  //       title="album info"
+  //       backHref={`/lookup?lucky=true&q=${itunesAlbumDetailsQuery.data?.artistName}`}
+  //     />
+
+  //     <Main
+
+  //     />
+  //   </>
+  // );
 }

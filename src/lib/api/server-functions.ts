@@ -29,8 +29,8 @@ export const getGenreDetails = createServerFn()
       ?.findAll(".genre")
       .map((el) => ({
         artistName: el.childNodes[0].textContent,
-        fontSize: el.style.getPropertyValue("font-size"),
         id: el.querySelector<HTMLAnchorElement>("a")?.href?.slice(23),
+        color: el.style.getPropertyValue("color"),
         preview: {
           url: el.getAttribute("preview_url"),
           title: el.getAttribute("title"),
@@ -42,7 +42,21 @@ export const getGenreDetails = createServerFn()
       href: e.href,
     }));
 
-    return { genreName, artists, links };
+    const relatedGenres = scrappy
+      .find("#tunnel")
+      ?.find(".canvas")
+      ?.findAll(".genre")
+      .map((el) => ({
+        genreName: el.childNodes[0].textContent!,
+        color: el.style.getPropertyValue("color"),
+        preview: {
+          url: el.getAttribute("preview_url"),
+          title: el.getAttribute("title"),
+        },
+      }))
+      .filter((g) => g.genreName !== genreName);
+
+    return { genreName, artists, links, relatedGenres };
   });
 
 export const lookup = createServerFn()

@@ -1,8 +1,6 @@
 import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
-import { Header } from "../components/header";
-import { Main } from "../components/main";
-import { VirtualGrid } from "../components/virtual-grid";
+import { Layout } from "../components/layout";
 import { lookupArtists } from "../lib/api/server-functions";
 import { Button, Input } from "@base-ui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -34,7 +32,7 @@ function RouteComponent() {
   // scuffed asl
   if (lucky) {
     if (!artistsQuery.data?.length) {
-      return;
+      return <div />;
     } else {
       navigate({
         to: "/artist/$id",
@@ -46,40 +44,45 @@ function RouteComponent() {
 
   return (
     <>
-      <Header title="artist lookup" backHref="/">
-        <form className="flex grow gap-3 px-3 md:max-w-md" action="/lookup">
-          <Input
-            className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
-            name="q"
-            value={searchTerm}
-            onValueChange={setSearchTerm}
-          />
+      <Layout
+        header={{
+          title: "artist lookup",
+          children: (
+            <form className="flex grow gap-3 px-3 md:max-w-md" action="/lookup">
+              <Input
+                className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
+                name="q"
+                value={searchTerm}
+                onValueChange={setSearchTerm}
+              />
 
-          <Button type="submit" className="btn-inverse size-9 justify-center">
-            →
-          </Button>
-        </form>
-      </Header>
-
-      <Main>
+              <Button
+                type="submit"
+                className="btn-inverse size-9 justify-center"
+              >
+                →
+              </Button>
+            </form>
+          ),
+        }}
+      >
         <AsyncView query={artistsQuery}>
           {(results) => (
-            <VirtualGrid entries={results}>
-              {(artist) => (
+            <div className="cool-grid">
+              {results.map((artist) => (
                 <Chip
+                  key={artist.id}
                   to="/artist/$id"
-                  leading={
-                    <img src={artist.images.at(-1)?.url} className="size-9" />
-                  }
+                  leading={artist.images.at(-1)?.url}
                   params={{ id: artist.id }}
                 >
                   {artist.name}
                 </Chip>
-              )}
-            </VirtualGrid>
+              ))}
+            </div>
           )}
         </AsyncView>
-      </Main>
+      </Layout>
     </>
   );
 }

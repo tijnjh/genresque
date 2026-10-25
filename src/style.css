@@ -29,5 +29,13 @@ a.btn-inverse {
 }
 
 @utility cool-grid {
-  @apply grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-3;
+  @apply grid auto-rows-min grid-cols-responsive items-start gap-3 overflow-y-auto;
+}
+
+@utility grid-cols-responsive {
+  @apply grid-cols-[repeat(auto-fill,minmax(14rem,1fr))];
+}
+
+@utility section-divider {
+  @apply flex h-9 items-center border-b border-zinc-300-700;
 }

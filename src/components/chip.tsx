@@ -12,14 +12,19 @@ export function Chip({
   ...props
 }: LinkProps & {
   children?: string;
-  leading?: ReactNode;
+  leading?: ReactNode | string;
   trailing?: ReactNode;
   inverse?: boolean;
   className?: string;
 }) {
   return (
     <div className="flex h-9 items-center">
-      {leading}
+      {typeof leading === "string" ? (
+        <img className="aspect-square size-9" src={leading} />
+      ) : (
+        leading
+      )}
+
       <Link
         {...props}
         className={cn(

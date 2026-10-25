@@ -46,3 +46,23 @@ export function fmt(
       return Intl.NumberFormat(locale, opts).format(subject as number);
   }
 }
+
+export function getErrorMessage(error: unknown) {
+  const genericMsg = "an unknown error occurred, check logs for more info";
+
+  switch (typeof error) {
+    case "undefined":
+      return genericMsg;
+
+    case "string":
+      return error;
+
+    case "object":
+      if (error === null) return genericMsg;
+      if ("message" in error) return error.message as string;
+      return JSON.stringify(error);
+
+    default:
+      return genericMsg;
+  }
+}

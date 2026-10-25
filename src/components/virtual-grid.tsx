@@ -69,7 +69,7 @@ export function VirtualGrid<T>({
   });
 
   return (
-    <div ref={parentRef} className="h-full scrollbar-none overflow-auto">
+    <div ref={parentRef} className="h-full overflow-x-hidden overflow-y-auto">
       <ul
         ref={gridRef}
         className="relative"

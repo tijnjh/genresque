@@ -13,7 +13,7 @@ export function SpotifyWidget({
   return (
     <iframe
       {...props}
-      className={cn("h-128 w-full rounded-xl md:h-full md:w-md", className)}
+      className={cn("h-38 w-full rounded-xl", className)}
       src={`https://open.spotify.com/embed/${type}/${id}`}
       allowFullScreen
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"

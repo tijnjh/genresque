@@ -1,10 +1,14 @@
 /// <reference types="vite/client" />
+import { ErrorAlert } from "../components/error-alert";
 import { MiniPlayer } from "../components/mini-player";
+import { getErrorMessage } from "../lib/utils";
 import styleCss from "../style.css?url";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
+  CatchBoundary,
   createRootRoute,
   HeadContent,
+  Link,
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
@@ -32,6 +36,11 @@ export const Route = createRootRoute({
   component: RootComponent,
 });
 
+const tabs = [
+  ["genres", "/"],
+  ["search", "/search"],
+] as const;
+
 function RootComponent() {
   return (
     <StrictMode>
@@ -42,8 +51,19 @@ function RootComponent() {
               <HeadContent />
             </head>
 
-            <body className="relative isolate grid h-dvh touch-manipulation grid-rows-[min-content_1fr] bg-zinc-200-800 text-zinc-950-50 scheme-light-dark">
-              <Outlet />
+            <body className="relative isolate touch-manipulation bg-zinc-200-800 text-black scheme-light-dark dark:text-white">
+              <div className="grid h-dvh grid-cols-1 overflow-hidden max-md:grid-rows-[1fr_min-content] md:grid-cols-[auto_1fr]">
+                <Aside />
+
+                <CatchBoundary
+                  getResetKey={() => "reset"}
+                  errorComponent={({ error }) => (
+                    <ErrorAlert message={getErrorMessage(error)} />
+                  )}
+                >
+                  <Outlet />
+                </CatchBoundary>
+              </div>
 
               <MiniPlayer />
 
@@ -53,5 +73,26 @@ function RootComponent() {
         </NuqsAdapter>
       </QueryClientProvider>
     </StrictMode>
+  );
+}
+
+function Aside() {
+  return (
+    <aside className="z-999 flex h-full flex-col gap-3 border-zinc-300-700 p-3 max-md:order-1 max-md:border-t md:w-72 md:border-r">
+      <span className="h-9 text-2xl font-bold max-md:hidden">genresque</span>
+
+      <div className="flex gap-3 md:contents">
+        {tabs.map(([name, to]) => (
+          <Link
+            key={to}
+            activeProps={{ className: "btn-inverse" }}
+            inactiveProps={{ className: "btn" }}
+            to={to}
+          >
+            {name}
+          </Link>
+        ))}
+      </div>
+    </aside>
   );
 }

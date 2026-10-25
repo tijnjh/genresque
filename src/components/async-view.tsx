@@ -11,14 +11,14 @@ export function AsyncView<T extends UseQueryResult>({
   switch (query.status) {
     case "pending":
       return (
-        <div className="grid size-full grow cursor-wait place-items-center p-3">
+        <div className="grid size-full grow cursor-wait place-items-center">
           <div className="size-9 animate-spin rounded-full border-4 border-zinc-300-700 border-t-zinc-600-400" />
         </div>
       );
 
     case "error":
       return (
-        <div className="grid size-full grow place-items-center p-3">
+        <div className="grid size-full grow place-items-center">
           <div className="max-w-xl bg-red-200 p-4 text-red-700">
             {query.error.message}
           </div>

@@ -1,13 +1,11 @@
 import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
-import { Header } from "../components/header";
-import { Main } from "../components/main";
+import { Layout } from "../components/layout";
 import { SpotifyWidget } from "../components/spotify-widget";
 import {
   getArtistDetailsById,
   getGenresByArtistId,
 } from "../lib/api/server-functions";
-import { fmt } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import * as itunes from "itunes-store-api";
@@ -29,56 +27,21 @@ function RouteComponent() {
     queryFn: async () => await getGenresByArtistId({ data: params.id }),
   });
 
-  const artistAlbumsQuery = useQuery({
-    queryKey: ["artist-itunes-albums", artistDetailsQuery.data?.name],
-    queryFn: async () => {
-      const artistItunesId = await itunes
-        .search(artistDetailsQuery.data!.name, {
-          media: "music",
-          entity: "musicArtist",
-        })
-        .then((r) => r.results[0].artistId);
-
-      return await itunes
-        .lookup("id", artistItunesId, {
-          media: "music",
-          entity: "album",
-        })
-        .then((r) => r.results.filter((a) => a.wrapperType === "collection"));
-    },
-    enabled: !!artistDetailsQuery.data?.name,
-  });
-
   return (
-    <>
-      <Header
-        title="artist details"
-        links={[
-          {
-            text: "Spotify",
-            href: `https://open.spotify.com/artist/${params.id}`,
-          },
-        ]}
-      />
+    <Layout
+      header={{
+        title: artistDetailsQuery.data?.name ?? "",
+      }}
 
-      <Main
-        leading={
-          <>
-            <AsyncView query={artistDetailsQuery}>
-              {(artist) => (
-                <hgroup className="flex flex-col gap-1.5">
-                  <h1 className="text-3xl font-semibold md:text-5xl">
-                    {artist.name}
-                  </h1>
-                  <p className="opacity-75">
-                    {fmt("number", artist.followers.total)} spotify followers
-                  </p>
-                </hgroup>
-              )}
-            </AsyncView>
+      leading={
+        <>
+          <SpotifyWidget id={params.id} type="artist" className="h-38!" />
 
-            <AsyncView query={artistGenresQuery}>
-              {(data) => (
+          <span className="section-divider">genres this artist is in</span>
+
+          <AsyncView query={artistGenresQuery}>
+            {(data) =>
+              !!data.length && (
                 <div className="cool-grid">
                   {data.map((genre) => (
                     <Chip
@@ -90,33 +53,110 @@ function RouteComponent() {
                     </Chip>
                   ))}
                 </div>
-              )}
-            </AsyncView>
-
-            <SpotifyWidget id={params.id} type="artist" />
-          </>
-        }
-        trailing={
-          <AsyncView query={artistAlbumsQuery}>
-            {(albums) => (
-              <div className="cool-grid h-fit">
-                {albums.map((album) => (
-                  <Chip
-                    key={album.collectionId}
-                    leading={
-                      <img src={album.artworkUrl60} className="size-9" />
-                    }
-                    to="/album/$itunesId"
-                    params={{ itunesId: String(album.collectionId) }}
-                  >
-                    {album.collectionName}
-                  </Chip>
-                ))}
-              </div>
-            )}
+              )
+            }
           </AsyncView>
-        }
-      />
-    </>
+        </>
+      }
+
+      trailing={
+        artistDetailsQuery.data?.name && (
+          <ArtistReleasesList artistName={artistDetailsQuery.data?.name} />
+        )
+      }
+    />
   );
+}
+
+function ArtistReleasesList({ artistName }: { artistName: string }) {
+  const artistAlbumsQuery = useQuery({
+    queryKey: ["artist-itunes-albums", artistName],
+    queryFn: async () => {
+      const artistItunesId = await itunes
+        .search(artistName, {
+          media: "music",
+          entity: "musicArtist",
+        })
+        .then((r) => r.results[0]?.artistId);
+
+      if (!artistItunesId)
+        throw new Error(
+          `could't find id for artist: -- ${artistName} -- on itunes`,
+        );
+
+      return await itunes
+        .lookup("id", artistItunesId, {
+          media: "music",
+          entity: "album",
+        })
+        .then((r) => r.results.filter((a) => a.wrapperType === "collection"));
+    },
+  });
+
+  return (
+    <AsyncView query={artistAlbumsQuery}>
+      {(releases) => {
+        const organizedReleases = organizeArtistReleases(releases);
+
+        return (
+          <div className="lg:overflow-y-auto">
+            {Object.entries(organizedReleases).map(
+              ([name, releases]) =>
+                !!releases.length && (
+                  <div key={name} className="flex flex-col gap-3">
+                    <span className="section-divider">{name}</span>
+
+                    <div className="cool-grid">
+                      {releases.map((release) => (
+                        <Chip
+                          key={release.collectionId}
+                          leading={release.artworkUrl60}
+                          to="/album/$itunesId"
+                          params={{ itunesId: release.collectionId }}
+                        >
+                          {streamlineReleaseName(release.collectionName)}
+                        </Chip>
+                      ))}
+                    </div>
+                  </div>
+                ),
+            )}
+          </div>
+        );
+      }}
+    </AsyncView>
+  );
+}
+
+function organizeArtistReleases(releases: itunes.ResultAlbum[]) {
+  // remove cleaned version
+  releases = releases.filter((r) => r.collectionExplicitness !== "cleaned");
+
+  const albums: itunes.ResultAlbum[] = [];
+  const eps: itunes.ResultAlbum[] = [];
+  const singles: itunes.ResultAlbum[] = [];
+
+  for (const release of releases) {
+    const name = release.collectionName;
+
+    switch (true) {
+      case name.endsWith(" - Single"):
+        singles.push(release);
+        break;
+
+      case name.endsWith(" - EP"):
+        eps.push(release);
+        break;
+
+      default:
+        albums.push(release);
+        break;
+    }
+  }
+
+  return { albums, eps, singles };
+}
+
+function streamlineReleaseName(releaseName: string) {
+  return releaseName.replace(" - Single", "").replace(" - EP", "");
 }

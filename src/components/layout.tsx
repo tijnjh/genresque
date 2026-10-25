@@ -1,7 +1,36 @@
 import { fixRelativeUrl } from "../lib/utils";
-import { Link, useLocation } from "@tanstack/react-router";
-import { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
+import { ComponentProps, ReactNode } from "react";
 import { MergeExclusive } from "type-fest";
+
+export function Layout({
+  children,
+  leading,
+  trailing,
+  header,
+}: { header: ComponentProps<typeof Header> } & MergeExclusive<
+  { children: ReactNode },
+  { leading: ReactNode; trailing: ReactNode }
+>) {
+  return (
+    <div className="grid grid-rows-[auto_1fr] overflow-hidden">
+      <Header {...header} />
+
+      <div className="grid overflow-y-auto p-3">
+        {children ? (
+          <main className="overflow-hidden">{children}</main>
+        ) : (
+          <main className="grid h-full grid-cols-1 gap-6 lg:grid-cols-[auto_1fr] lg:overflow-hidden">
+            <div className="flex w-full flex-col gap-3 lg:w-72 xl:w-115">
+              {leading}
+            </div>
+            {trailing}
+          </main>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export function Header({
   title,
@@ -18,16 +47,9 @@ export function Header({
   // we hide this button cus its too wide and doesn't provide much functionality in this case
   links = links?.filter((l) => l.text !== "Every Noise at Once");
 
-  const location = useLocation();
-
   return (
-    <header className="sticky top-0 z-9999 flex justify-between overflow-hidden bg-zinc-200-800 max-md:flex-col max-md:pb-3 md:items-center">
-      <div className="flex items-center gap-3 p-3">
-        {![location.pathname, backHref].includes("/") && (
-          <Link to="/" className="btn">
-            home
-          </Link>
-        )}
+    <header className="flex gap-3 overflow-hidden border-b border-zinc-300-700 p-3 max-md:flex-col md:h-15 md:items-center md:justify-between">
+      <div className="flex items-center gap-3">
         {backHref && (
           <Link to={backHref} className="btn-inverse size-9 justify-center">
             ←

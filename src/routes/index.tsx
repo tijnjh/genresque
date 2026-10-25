@@ -1,7 +1,6 @@
 import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
-import { Header } from "../components/header";
-import { Main } from "../components/main";
+import { Layout } from "../components/layout";
 import { PlayButton } from "../components/play-button";
 import { VirtualGrid } from "../components/virtual-grid";
 import { useEnumToggle } from "../hooks/use-enum-toggle";
@@ -30,62 +29,73 @@ function RouteComponent() {
     defaultValue: "genre",
   });
 
-  const filterType = useEnumToggle(["genre", "preview", "lookup"], {
+  const filterType = useEnumToggle(["genre", "preview"], {
     onUpdate: setType,
     defaultValue: type ?? "genre",
   });
 
+  const [sort, setSort] = useQueryState("sort", {
+    clearOnDefault: true,
+    defaultValue: "popularity",
+  });
+
+  const sortType = useEnumToggle(["popularity", "alphabetical"], {
+    onUpdate: setSort,
+    defaultValue: sort ?? "popularity",
+  });
+
   return (
-    <>
-      <Header title="genresque">
-        <form
-          className="flex grow gap-3 px-3 md:max-w-md"
-          action="/lookup"
-          onSubmit={(e) => {
-            if (!searchTerm.trim()) e.preventDefault();
-            if (filterType.current !== "lookup") e.preventDefault();
-          }}
-        >
-          <Button className="btn" onClick={filterType.cycle}>
-            {filterType.current}
-          </Button>
+    <Layout
+      header={{
+        title: "all genres",
+        children: (
+          <div className="flex gap-6">
+            <div className="flex grow gap-3">
+              <Button className="btn" onClick={filterType.cycle}>
+                {filterType.current}
+              </Button>
 
-          <Input
-            value={searchTerm ?? ""}
-            onValueChange={(val) => setSearchTerm(val)}
-            className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
-            name="q"
-            placeholder={
-              {
-                genre: "filter genre names",
-                preview: "filter genre preview track name",
-                lookup: "look up an artist",
-              }[filterType.current]
-            }
-          />
-
-          {filterType.current === "lookup" && (
-            <Button type="submit" className="btn-inverse size-9 justify-center">
-              →
-            </Button>
-          )}
-        </form>
-      </Header>
-
-      <AsyncView query={genresQuery}>
-        {(genres) => {
-          return (
-            <Main>
-              <Genres
-                filterType={filterType.current}
-                searchTerm={searchTerm}
-                genres={genres}
+              <Input
+                value={searchTerm ?? ""}
+                onValueChange={(val) => setSearchTerm(val)}
+                className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
+                name="q"
+                placeholder={
+                  {
+                    genre: "filter genre names",
+                    preview: "filter genre preview track name",
+                  }[filterType.current]
+                }
               />
-            </Main>
-          );
-        }}
+
+              {filterType.current === "lookup" && (
+                <Button
+                  type="submit"
+                  className="btn-inverse size-9 justify-center"
+                >
+                  →
+                </Button>
+              )}
+
+              {/* <Button className="btn" onClick={sortType.cycle}>
+                {sortType.current}
+              </Button> */}
+            </div>
+          </div>
+        ),
+      }}
+    >
+      <AsyncView query={genresQuery}>
+        {(genres) => (
+          <Genres
+            filterType={filterType.current}
+            sortType={sortType.current}
+            searchTerm={searchTerm}
+            genres={genres}
+          />
+        )}
       </AsyncView>
-    </>
+    </Layout>
   );
 }
 
@@ -93,10 +103,12 @@ function Genres({
   genres,
   searchTerm,
   filterType,
+  sortType,
 }: {
   genres: Everynoise.Genre[];
   searchTerm: string;
   filterType: string;
+  sortType: string;
 }) {
   const filteredGenres = useMemo(() => {
     const t = searchTerm?.toLowerCase();
@@ -117,8 +129,13 @@ function Genres({
     }
   }, [searchTerm, filterType, genres]);
 
+  const sortedGenres =
+    sortType === "alphabetical"
+      ? filteredGenres.sort((a, b) => a.name.localeCompare(b.name))
+      : filteredGenres;
+
   return (
-    <VirtualGrid entries={filteredGenres}>
+    <VirtualGrid entries={sortedGenres}>
       {(genre) => (
         <Chip
           to="/genre/$slug"
@@ -126,7 +143,8 @@ function Genres({
           trailing={
             <PlayButton
               title={genre.preview.title}
-              className="btn-inverse size-9 shrink-0 justify-center"
+              className="bt size-9 shrink-0 justify-center"
+              style={{ backgroundColor: genre.color }}
               track={genre.preview}
             />
           }
