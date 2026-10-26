@@ -13,7 +13,7 @@ export function Layout({
   { leading: ReactNode; trailing: ReactNode }
 >) {
   return (
-    <div className="grid grid-rows-[1fr_auto] overflow-hidden">
+    <div className="grid grid-rows-[1fr_auto] overflow-hidden md:grid-rows-[auto_1fr]">
       <Header {...header} />
 
       <div className="grid overflow-y-auto p-3">
