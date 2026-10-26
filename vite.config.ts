@@ -6,6 +6,10 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  ssr: {
+    noExternal: true,
+    external: ["papaparse"],
+  },
   plugins: [
     tanstackStart(),
     nitroV2Plugin({ preset: "node-server" }),
