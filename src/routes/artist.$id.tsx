@@ -2,16 +2,15 @@ import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { SpotifyWidget } from "../components/spotify-widget";
+import { itunes } from "../lib/api/itunes";
 import {
   getArtistDetailsById,
   getGenresByArtistId,
-  proxyItunesLookup,
-  proxyItunesSearch,
 } from "../lib/api/server-functions";
 import { genreNameToSlug } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type * as itunes from "itunes-store-api";
+import { ResultAlbum } from "itunes-store-api";
 
 export const Route = createFileRoute("/artist/$id")({
   component: RouteComponent,
@@ -79,32 +78,24 @@ function ArtistReleasesList({ artistName }: { artistName: string }) {
   const artistAlbumsQuery = useQuery({
     queryKey: ["artist-itunes-albums", artistName],
     queryFn: async () => {
-      const artistItunesId = await proxyItunesSearch({
-        data: {
-          query: artistName,
-          options: { media: "music", entity: "musicArtist" },
-        },
-      }).then((r) => (r.results[0] as itunes.ResultMusicArtist)?.artistId); // fixme - properly type this
+      const artistItunesId = await itunes
+        .search(artistName, {
+          media: "music",
+          entity: "musicArtist",
+        })
+        .then((r) => r.results[0]?.artistId);
 
       if (!artistItunesId)
         throw new Error(
           `could't find id for artist: -- ${artistName} -- on itunes`,
         );
 
-      return await proxyItunesLookup({
-        data: {
-          type: "id",
-          query: artistItunesId,
-          options: {
-            media: "music",
-            entity: "album",
-          },
-        },
-      }).then((r) =>
-        (r.results as itunes.ResultAlbum[]).filter(
-          (a) => a.wrapperType === "collection",
-        ),
-      );
+      return await itunes
+        .lookup("id", artistItunesId, {
+          media: "music",
+          entity: "album",
+        })
+        .then((r) => r.results.filter((a) => a.wrapperType === "collection"));
     },
   });
 
@@ -143,13 +134,13 @@ function ArtistReleasesList({ artistName }: { artistName: string }) {
   );
 }
 
-function organizeArtistReleases(releases: itunes.ResultAlbum[]) {
+function organizeArtistReleases(releases: ResultAlbum[]) {
   // remove cleaned version
   releases = releases.filter((r) => r.collectionExplicitness !== "cleaned");
 
-  const albums: itunes.ResultAlbum[] = [];
-  const eps: itunes.ResultAlbum[] = [];
-  const singles: itunes.ResultAlbum[] = [];
+  const albums: ResultAlbum[] = [];
+  const eps: ResultAlbum[] = [];
+  const singles: ResultAlbum[] = [];
 
   for (const release of releases) {
     const name = release.collectionName;

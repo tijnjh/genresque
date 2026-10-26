@@ -2,11 +2,10 @@ import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { PlayButton } from "../components/play-button";
-import { proxyItunesLookup } from "../lib/api/server-functions";
+import { itunes } from "../lib/api/itunes";
 import { fmt } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type * as itunes from "itunes-store-api";
 import * as v from "valibot";
 
 export const Route = createFileRoute("/album/$itunesId")({
@@ -26,33 +25,27 @@ function RouteComponent() {
   const itunesAlbumDetailsQuery = useQuery({
     queryKey: ["itunes-album-details", itunesId],
     queryFn: async () =>
-      await proxyItunesLookup({
-        data: {
-          type: "id",
-          query: itunesId,
-          options: { media: "music", entity: "album" },
-        },
-      }).then((r) => r.results[0] as itunes.ResultAlbum), // fixme - properly type this
+      await itunes
+        .lookup("id", itunesId, {
+          media: "music",
+          entity: "album",
+        })
+        .then((r) => r.results[0]),
   });
 
   const albumTracksQuery = useQuery({
     queryKey: ["itunes-album-tracks", itunesId],
     queryFn: async () =>
-      await proxyItunesLookup({
-        data: {
-          type: "id",
-          query: itunesId,
-          options: {
-            media: "music",
-            entity: "song",
-          },
-        },
-      }).then(
-        (r) =>
-          (r.results as itunes.ResultMusicTrack[]).filter(
+      await itunes
+        .lookup("id", itunesId, {
+          media: "music",
+          entity: "song",
+        })
+        .then((r) =>
+          r.results.filter(
             (t) => t.wrapperType === "track" && t.kind === "song",
-          ), // fixme - properly type this
-      ),
+          ),
+        ),
   });
 
   return (
