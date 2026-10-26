@@ -1,4 +1,4 @@
-import genres from "../../data/genres.gen.json" with { type: "json" };
+import genres from "../../data/genres.gen.csv?raw";
 import { everynoiseUrl } from "../constants";
 import { Scrappy } from "../scrappy";
 import { genreNameToSlug } from "../utils";
@@ -6,9 +6,12 @@ import { $spotify } from "./clients";
 import { createServerFn } from "@tanstack/react-start";
 import * as itunes from "itunes-store-api";
 import ky from "ky";
+import CSV from "papaparse";
 import * as v from "valibot";
 
-export const getAllGenres = createServerFn().handler(() => genres);
+export const getAllGenres = createServerFn().handler(
+  () => CSV.parse(genres, { header: true }).data as Everynoise.Genre[],
+);
 
 export const getGenreDetails = createServerFn()
   .validator(v.string())
@@ -32,10 +35,8 @@ export const getGenreDetails = createServerFn()
         artistName: el.childNodes[0].textContent,
         id: el.querySelector<HTMLAnchorElement>("a")?.href?.slice(23),
         color: el.style.getPropertyValue("color"),
-        preview: {
-          url: el.getAttribute("preview_url"),
-          title: el.getAttribute("title"),
-        },
+        previewUrl: el.getAttribute("preview_url"),
+        previewTitle: el.getAttribute("title"),
       }));
 
     const links = titleEl?.findAll<HTMLAnchorElement>("a").map((e) => ({
@@ -50,10 +51,8 @@ export const getGenreDetails = createServerFn()
       .map((el) => ({
         genreName: el.childNodes[0].textContent!,
         color: el.style.getPropertyValue("color"),
-        preview: {
-          url: el.getAttribute("preview_url"),
-          title: el.getAttribute("title"),
-        },
+        previewUrl: el.getAttribute("preview_url"),
+        previewTitle: el.getAttribute("title"),
       }))
       .filter((g) => g.genreName !== genreName);
 
@@ -78,12 +77,7 @@ export const getGenresByArtistId = createServerFn()
       .text()
       .then(JSON.parse);
 
-    return (
-      (Object.values(res)[0] as string[])?.map((g) => ({
-        name: g,
-        slug: genreNameToSlug(g),
-      })) ?? []
-    );
+    return (Object.values(res)[0] as string[]) ?? [];
   });
 
 export const lookupArtists = createServerFn()

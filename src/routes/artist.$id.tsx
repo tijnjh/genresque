@@ -8,6 +8,7 @@ import {
   proxyItunesLookup,
   proxyItunesSearch,
 } from "../lib/api/server-functions";
+import { genreNameToSlug } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type * as itunes from "itunes-store-api";
@@ -51,10 +52,10 @@ function RouteComponent() {
                     {data.map((genre) => (
                       <Chip
                         to="/genre/$slug"
-                        key={genre.slug}
-                        params={{ slug: genre.slug }}
+                        key={genre}
+                        params={{ slug: genreNameToSlug(genre) }}
                       >
-                        {genre.name}
+                        {genre}
                       </Chip>
                     ))}
                   </div>

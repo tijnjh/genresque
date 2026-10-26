@@ -41,10 +41,13 @@ function RouteComponent() {
                   params={{ slug: genreNameToSlug(genre.genreName) }}
                   trailing={
                     <PlayButton
-                      title={genre.preview.title!}
+                      title={genre.previewTitle!}
                       className="bt size-9 shrink-0 justify-center"
                       style={{ backgroundColor: genre.color }}
-                      track={genre.preview}
+                      track={{
+                        title: genre.previewTitle,
+                        url: genre.previewUrl,
+                      }}
                     />
                   }
                 >
@@ -71,8 +74,11 @@ function RouteComponent() {
                       <PlayButton
                         className="btn size-9 justify-center"
                         style={{ backgroundColor: artist.color }}
-                        title={artist.preview.title!}
-                        track={artist.preview}
+                        title={artist.previewTitle!}
+                        track={{
+                          title: artist.previewTitle,
+                          url: artist.previewUrl,
+                        }}
                       />
                     }
                   >

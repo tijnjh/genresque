@@ -5,6 +5,7 @@ import { PlayButton } from "../components/play-button";
 import { VirtualGrid } from "../components/virtual-grid";
 import { useEnumToggle } from "../hooks/use-enum-toggle";
 import { getAllGenres } from "../lib/api/server-functions";
+import { genreNameToSlug } from "../lib/utils";
 import { Button, Input } from "@base-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -116,12 +117,12 @@ function Genres({
     switch (filterType) {
       case "genre":
         return t
-          ? genres.filter((g) => g.name.toLowerCase().includes(t))
+          ? genres.filter((g) => g.genreName.toLowerCase().includes(t))
           : genres;
 
       case "preview":
         return t
-          ? genres.filter((g) => g.preview.title.toLowerCase().includes(t))
+          ? genres.filter((g) => g.previewTitle.toLowerCase().includes(t))
           : genres;
 
       default:
@@ -131,7 +132,7 @@ function Genres({
 
   const sortedGenres =
     sortType === "alphabetical"
-      ? filteredGenres.sort((a, b) => a.name.localeCompare(b.name))
+      ? filteredGenres.sort((a, b) => a.genreName.localeCompare(b.genreName))
       : filteredGenres;
 
   return (
@@ -139,17 +140,17 @@ function Genres({
       {(genre) => (
         <Chip
           to="/genre/$slug"
-          params={{ slug: genre.slug }}
+          params={{ slug: genreNameToSlug(genre.genreName) }}
           trailing={
             <PlayButton
-              title={genre.preview.title}
+              title={genre.previewTitle}
               className="bt size-9 shrink-0 justify-center"
               style={{ backgroundColor: genre.color }}
-              track={genre.preview}
+              track={{ title: genre.previewTitle, url: genre.previewUrl }}
             />
           }
         >
-          {genre.name}
+          {genre.genreName}
         </Chip>
       )}
     </VirtualGrid>

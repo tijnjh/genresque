@@ -1,6 +1,8 @@
 import { everynoiseUrl } from "./constants";
 
-export function genreNameToSlug(genre: string) {
+// i tested this against all 6000 genres
+export function genreNameToSlug(genre: string | undefined | null) {
+  if (!genre) return;
   return genre.replace(/[^a-z0-9]/gi, "");
 }
 
