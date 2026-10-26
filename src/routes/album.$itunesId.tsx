@@ -5,7 +5,7 @@ import { PlayButton } from "../components/play-button";
 import { itunes } from "../lib/api/itunes";
 import { fmt } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import * as v from "valibot";
 
 export const Route = createFileRoute("/album/$itunesId")({
@@ -48,11 +48,21 @@ function RouteComponent() {
         ),
   });
 
+  const router = useRouter();
+
+  const { href: backHref } = router.buildLocation({
+    to: "/search",
+    search: {
+      lucky: true,
+      q: itunesAlbumDetailsQuery.data?.artistName,
+    },
+  });
+
   return (
     <Layout
       header={{
         title: itunesAlbumDetailsQuery.data?.collectionName ?? "",
-        backHref: `/lookup?lucky=true&q=${itunesAlbumDetailsQuery.data?.artistName}`,
+        backHref,
       }}
 
       leading={
@@ -66,7 +76,7 @@ function RouteComponent() {
                 />
 
                 <Chip
-                  to="/lookup"
+                  to="/search"
                   search={{ lucky: true, q: album.artistName }}
                 >
                   {album.artistName}
@@ -112,17 +122,4 @@ function RouteComponent() {
       }
     />
   );
-
-  // return (
-  //   <>
-  //     <Header
-  //       title="album info"
-  //       backHref={`/lookup?lucky=true&q=${itunesAlbumDetailsQuery.data?.artistName}`}
-  //     />
-
-  //     <Main
-
-  //     />
-  //   </>
-  // );
 }
