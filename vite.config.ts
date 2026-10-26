@@ -8,7 +8,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   ssr: {
     noExternal: true,
-    external: ["papaparse"],
+    external: ["papaparse", "domino"],
   },
   plugins: [
     tanstackStart(),
