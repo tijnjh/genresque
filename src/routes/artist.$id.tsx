@@ -39,22 +39,26 @@ function RouteComponent() {
         <>
           <SpotifyWidget id={params.id} type="artist" className="h-38!" />
 
-          <span className="section-divider">genres this artist is in</span>
-
           <AsyncView query={artistGenresQuery}>
             {(data) =>
               !!data.length && (
-                <div className="cool-grid">
-                  {data.map((genre) => (
-                    <Chip
-                      to="/genre/$slug"
-                      key={genre.slug}
-                      params={{ slug: genre.slug }}
-                    >
-                      {genre.name}
-                    </Chip>
-                  ))}
-                </div>
+                <>
+                  <span className="section-divider">
+                    genres this artist is in
+                  </span>
+
+                  <div className="cool-grid">
+                    {data.map((genre) => (
+                      <Chip
+                        to="/genre/$slug"
+                        key={genre.slug}
+                        params={{ slug: genre.slug }}
+                      >
+                        {genre.name}
+                      </Chip>
+                    ))}
+                  </div>
+                </>
               )
             }
           </AsyncView>

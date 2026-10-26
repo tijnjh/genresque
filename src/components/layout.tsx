@@ -9,11 +9,11 @@ export function Layout({
   trailing,
   header,
 }: { header: ComponentProps<typeof Header> } & MergeExclusive<
-  { children: ReactNode },
+  { children?: ReactNode },
   { leading: ReactNode; trailing: ReactNode }
 >) {
   return (
-    <div className="grid grid-rows-[auto_1fr] overflow-hidden">
+    <div className="grid grid-rows-[1fr_auto] overflow-hidden">
       <Header {...header} />
 
       <div className="grid overflow-y-auto p-3">
@@ -48,7 +48,7 @@ export function Header({
   links = links?.filter((l) => l.text !== "Every Noise at Once");
 
   return (
-    <header className="flex gap-3 overflow-hidden border-b border-zinc-300-700 p-3 max-md:flex-col md:h-15 md:items-center md:justify-between">
+    <header className="flex gap-3 overflow-hidden border-zinc-300-700 p-3 max-md:order-1 max-md:flex-col max-md:border-t md:h-15 md:items-center md:justify-between md:border-b">
       <div className="flex items-center gap-3">
         {backHref && (
           <Link to={backHref} className="btn-inverse size-9 justify-center">
