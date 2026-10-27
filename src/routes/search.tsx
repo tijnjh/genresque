@@ -2,13 +2,9 @@ import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { lookupArtists } from "../lib/api/server-functions";
-import { useQuery } from "@tanstack/react-query";
-import {
-  createFileRoute,
-  LinkOptions,
-  linkOptions,
-} from "@tanstack/react-router";
-import { useState } from "react";
+import { useQuery } from "@tanstack/solid-query";
+import { createFileRoute, LinkOptions } from "@tanstack/solid-router";
+import { createSignal, For, Show } from "solid-js";
 import * as v from "valibot";
 
 let x: LinkOptions = { to: "/album/$itunesId", params: {} };
@@ -23,20 +19,20 @@ export const Route = createFileRoute("/search")({
 });
 
 function RouteComponent() {
-  const { q, lucky } = Route.useSearch();
+  const params = Route.useSearch();
 
-  const artistsQuery = useQuery({
-    queryKey: ["lookup-artists", q],
-    queryFn: async () => lookupArtists({ data: q! }),
-    enabled: !!q,
-  });
+  const artistsQuery = useQuery(() => ({
+    queryKey: ["lookup-artists", params().q],
+    queryFn: async () => lookupArtists({ data: params().q! }),
+    enabled: !!params().q,
+  }));
 
   const navigate = Route.useNavigate();
 
-  const [searchQuery, setSearchQuery] = useState<string>();
+  const [searchQuery, setSearchQuery] = createSignal<string>();
 
   // scuffed asl
-  if (lucky) {
+  if (params().lucky) {
     if (!artistsQuery.data?.length) {
       return <div />;
     } else {
@@ -54,50 +50,52 @@ function RouteComponent() {
         title: "search",
         children: (
           <form
-            className="flex grow gap-3 md:max-w-md"
+            class="flex grow gap-3 md:max-w-md"
             onSubmit={(e) => {
               e.preventDefault();
               navigate({
                 to: "/search",
                 search: {
-                  q: searchQuery,
+                  q: searchQuery(),
                 },
               });
             }}
           >
             <input
-              value={searchQuery ?? ""}
-              onChange={(e) => setSearchQuery(e.currentTarget.value)}
-              className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
+              value={searchQuery() ?? ""}
+              onInput={(e) => setSearchQuery(e.currentTarget.value)}
+              class="h-9 min-w-0 grow bg-zinc-50-950 px-3"
               name="q"
               placeholder="look up an artist"
             />
 
-            <button type="submit" className="btn-inverse size-9 justify-center">
+            <button type="submit" class="btn-inverse size-9 justify-center">
               →
             </button>
           </form>
         ),
       }}
     >
-      {q && (
+      <Show when={params().q}>
         <AsyncView query={artistsQuery}>
           {(results) => (
-            <div className="cool-grid">
-              {results.map((artist) => (
-                <Chip
-                  key={artist.id}
-                  to="/artist/$id"
-                  leading={artist.images.at(-1)?.url}
-                  params={{ id: artist.id }}
-                >
-                  {artist.name}
-                </Chip>
-              ))}
+            <div class="cool-grid">
+              <For each={results}>
+                {(artist) => (
+                  <Chip
+                    // key={artist.id}
+                    to="/artist/$id"
+                    leading={artist.images.at(-1)?.url}
+                    params={{ id: artist.id }}
+                  >
+                    {artist.name}
+                  </Chip>
+                )}
+              </For>
             </div>
           )}
         </AsyncView>
-      )}
+      </Show>
     </Layout>
   );
 }

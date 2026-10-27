@@ -4,8 +4,9 @@ import { Layout } from "../components/layout";
 import { PlayButton } from "../components/play-button";
 import { itunes } from "../lib/api/itunes";
 import { fmt } from "../lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/solid-query";
+import { createFileRoute, useRouter } from "@tanstack/solid-router";
+import { For } from "solid-js";
 import * as v from "valibot";
 
 export const Route = createFileRoute("/album/$itunesId")({
@@ -20,24 +21,24 @@ export const Route = createFileRoute("/album/$itunesId")({
 });
 
 function RouteComponent() {
-  const { itunesId } = Route.useParams();
+  const params = Route.useParams();
 
-  const itunesAlbumDetailsQuery = useQuery({
-    queryKey: ["itunes-album-details", itunesId],
+  const itunesAlbumDetailsQuery = useQuery(() => ({
+    queryKey: ["itunes-album-details", params().itunesId],
     queryFn: async () =>
       await itunes
-        .lookup("id", itunesId, {
+        .lookup("id", params().itunesId, {
           media: "music",
           entity: "album",
         })
         .then((r) => r.results[0]),
-  });
+  }));
 
-  const albumTracksQuery = useQuery({
-    queryKey: ["itunes-album-tracks", itunesId],
+  const albumTracksQuery = useQuery(() => ({
+    queryKey: ["itunes-album-tracks", params().itunesId],
     queryFn: async () =>
       await itunes
-        .lookup("id", itunesId, {
+        .lookup("id", params().itunesId, {
           media: "music",
           entity: "song",
         })
@@ -46,7 +47,7 @@ function RouteComponent() {
             (t) => t.wrapperType === "track" && t.kind === "song",
           ),
         ),
-  });
+  }));
 
   const router = useRouter();
 
@@ -66,14 +67,11 @@ function RouteComponent() {
       }}
 
       leading={
-        <div className="flex flex-col gap-3">
+        <div class="flex flex-col gap-3">
           <AsyncView query={itunesAlbumDetailsQuery}>
             {(album) => (
               <>
-                <img
-                  src={album.artworkUrl100}
-                  className="aspect-square w-full"
-                />
+                <img src={album.artworkUrl100} class="aspect-square w-full" />
 
                 <Chip
                   to="/search"
@@ -98,24 +96,25 @@ function RouteComponent() {
       trailing={
         <AsyncView query={albumTracksQuery}>
           {(tracks) => (
-            <div className="flex h-full flex-col gap-3 overflow-x-hidden overflow-y-auto pb-32">
-              {tracks.map((track) => (
-                <Chip
-                  key={track.trackId}
-                  hash={String(track.trackId)}
-                  trailing={
-                    <PlayButton
-                      className="btn-inverse size-9 shrink-0 justify-center"
-                      track={{
-                        title: track.trackName,
-                        url: track.previewUrl,
-                      }}
-                    />
-                  }
-                >
-                  {track.trackName}
-                </Chip>
-              ))}
+            <div class="flex h-full flex-col gap-3 overflow-x-hidden overflow-y-auto pb-32">
+              <For each={tracks}>
+                {(track) => (
+                  <Chip
+                    hash={String(track.trackId)}
+                    trailing={
+                      <PlayButton
+                        class="btn-inverse size-9 shrink-0 justify-center"
+                        track={{
+                          title: track.trackName,
+                          url: track.previewUrl,
+                        }}
+                      />
+                    }
+                  >
+                    {track.trackName}
+                  </Chip>
+                )}
+              </For>
             </div>
           )}
         </AsyncView>

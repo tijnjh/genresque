@@ -1,31 +1,27 @@
-import { UseQueryResult } from "@tanstack/react-query";
-import { ReactNode } from "react";
+import { UseQueryResult } from "@tanstack/solid-query";
+import { JSX, Match, Switch } from "solid-js";
 
-export function AsyncView<T extends UseQueryResult>({
-  query,
-  children,
-}: {
+export function AsyncView<T extends UseQueryResult>(props: {
   query: T;
-  children: (arg: NonNullable<T["data"]>) => ReactNode;
+  children: (arg: NonNullable<T["data"]>) => JSX.Element;
 }) {
-  switch (query.status) {
-    case "pending":
-      return (
-        <div className="grid size-full grow cursor-wait place-items-center">
-          <div className="size-9 animate-spin rounded-full border-4 border-zinc-300-700 border-t-zinc-600-400" />
+  return (
+    <Switch>
+      <Match when={props.query.isPending}>
+        <div class="grid size-full grow cursor-wait place-items-center">
+          <div class="size-9 animate-spin rounded-full border-4 border-zinc-300-700 border-t-zinc-600-400" />
         </div>
-      );
-
-    case "error":
-      return (
-        <div className="grid size-full grow place-items-center">
-          <div className="max-w-xl bg-red-200 p-4 text-red-700">
-            {query.error.message}
+      </Match>
+      <Match when={props.query.isError}>
+        <div class="grid size-full grow place-items-center">
+          <div class="max-w-xl bg-red-200 p-4 text-red-700">
+            {props.query.error?.message}
           </div>
         </div>
-      );
-
-    case "success":
-      return children(query.data!);
-  }
+      </Match>
+      <Match when={props.query.isSuccess}>
+        {props.children(props.query.data!)}
+      </Match>
+    </Switch>
+  );
 }

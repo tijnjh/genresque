@@ -1,26 +1,25 @@
-import { nowPlayingAtom } from "../lib/atoms";
-import { useAtom } from "jotai";
-import { ButtonHTMLAttributes } from "react";
+import { nowPlaying, setNowPlaying } from "../lib/global";
+import { JSX, splitProps } from "solid-js";
 
-export function PlayButton({
-  track,
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & {
-  track: { title: string | null; url: string | null };
-}) {
-  const [nowPlaying, setNowPlaying] = useAtom(nowPlayingAtom);
-  const isThisTrackPlaying = nowPlaying.url === track.url;
+export function PlayButton(
+  props: JSX.HTMLAttributes<HTMLButtonElement> & {
+    track: { title: string | undefined; url: string | undefined };
+  },
+) {
+  const [local, rest] = splitProps(props, ["track"]);
+
+  const isThisTrackPlaying = () => nowPlaying().url === local.track.url;
 
   return (
     <button
-      {...props}
+      {...rest}
       onClick={() => {
-        isThisTrackPlaying
-          ? setNowPlaying({ title: null, url: null })
-          : setNowPlaying(track);
+        isThisTrackPlaying()
+          ? setNowPlaying({ title: undefined, url: undefined })
+          : setNowPlaying(local.track);
       }}
     >
-      {isThisTrackPlaying ? "☐" : "▶︎"}
+      {isThisTrackPlaying() ? "☐" : "▶︎"}
     </button>
   );
 }

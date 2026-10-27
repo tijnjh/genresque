@@ -1,20 +1,14 @@
 import tailwindcss from "@tailwindcss/vite";
 import { nitroV2Plugin } from "@tanstack/nitro-v2-vite-plugin";
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import { redact } from "@tanstack/redact/vite";
-import react from "@vitejs/plugin-react";
+import { tanstackStart } from "@tanstack/solid-start/plugin/vite";
 import { defineConfig } from "vite";
+import solid from "vite-plugin-solid";
 
 export default defineConfig({
-  ssr: {
-    noExternal: true,
-    external: ["papaparse", "domino"],
-  },
   plugins: [
     tanstackStart(),
     nitroV2Plugin({ preset: "node-server" }),
-    react({ compiler: true }),
-    redact(),
+    solid({ ssr: true }),
     tailwindcss(),
   ],
 });

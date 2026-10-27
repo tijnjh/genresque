@@ -3,7 +3,7 @@ import { ErrorAlert } from "../components/error-alert";
 import { MiniPlayer } from "../components/mini-player";
 import { getErrorMessage } from "../lib/utils";
 import styleCss from "../style.css?url";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import {
   CatchBoundary,
   createRootRoute,
@@ -11,9 +11,9 @@ import {
   Link,
   Outlet,
   Scripts,
-} from "@tanstack/react-router";
-import { NuqsAdapter } from "nuqs/adapters/tanstack-router";
-import { StrictMode } from "react";
+} from "@tanstack/solid-router";
+import { For } from "solid-js";
+import { HydrationScript } from "solid-js/web";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
@@ -43,55 +43,53 @@ const tabs = [
 
 function RootComponent() {
   return (
-    <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <NuqsAdapter>
-          <html lang="en" className="pointer-coarse:overscroll-none">
-            <head>
-              <HeadContent />
-            </head>
+    <QueryClientProvider client={queryClient}>
+      <html lang="en" class="pointer-coarse:overscroll-none">
+        <head>
+          <HydrationScript />
+          <HeadContent />
+        </head>
 
-            <body className="relative isolate touch-manipulation bg-zinc-200-800 text-black scheme-light-dark select-none dark:text-white">
-              <div className="grid h-dvh grid-cols-1 overflow-hidden max-md:grid-rows-[1fr_min-content] md:grid-cols-[auto_1fr]">
-                <Aside />
+        <body class="relative isolate touch-manipulation bg-zinc-200-800 text-black scheme-light-dark select-none dark:text-white">
+          <div class="grid h-dvh grid-cols-1 overflow-hidden max-md:grid-rows-[1fr_min-content] md:grid-cols-[auto_1fr]">
+            <Aside />
 
-                <CatchBoundary
-                  getResetKey={() => "reset"}
-                  errorComponent={({ error }) => (
-                    <ErrorAlert message={getErrorMessage(error)} />
-                  )}
-                >
-                  <Outlet />
-                </CatchBoundary>
-              </div>
+            <CatchBoundary
+              getResetKey={() => "reset"}
+              errorComponent={({ error }) => (
+                <ErrorAlert message={getErrorMessage(error)} />
+              )}
+            >
+              <Outlet />
+            </CatchBoundary>
+          </div>
 
-              <MiniPlayer />
+          <MiniPlayer />
 
-              <Scripts />
-            </body>
-          </html>
-        </NuqsAdapter>
-      </QueryClientProvider>
-    </StrictMode>
+          <Scripts />
+        </body>
+      </html>
+    </QueryClientProvider>
   );
 }
 
 function Aside() {
   return (
-    <aside className="z-999 flex h-full flex-col gap-3 border-zinc-300-700 p-3 max-md:order-1 max-md:border-t md:w-72 md:border-r">
-      <span className="h-9 text-2xl font-bold max-md:hidden">genresque</span>
+    <aside class="z-999 flex h-full flex-col gap-3 border-zinc-300-700 p-3 max-md:order-1 max-md:border-t md:w-72 md:border-r">
+      <span class="h-9 text-2xl font-bold max-md:hidden">genresque</span>
 
-      <div className="flex gap-3 md:contents">
-        {tabs.map(([name, to]) => (
-          <Link
-            key={to}
-            activeProps={{ className: "btn-inverse" }}
-            inactiveProps={{ className: "btn" }}
-            to={to}
-          >
-            {name}
-          </Link>
-        ))}
+      <div class="flex gap-3 md:contents">
+        <For each={tabs}>
+          {([name, to]) => (
+            <Link
+              activeProps={{ class: "btn-inverse" }}
+              inactiveProps={{ class: "btn" }}
+              to={to}
+            >
+              {name}
+            </Link>
+          )}
+        </For>
       </div>
     </aside>
   );

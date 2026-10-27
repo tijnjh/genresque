@@ -86,7 +86,7 @@ export interface RootRouteChildren {
   GenreSlugRoute: typeof GenreSlugRoute
 }
 
-declare module '@tanstack/react-router' {
+declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
     '/': {
       id: '/'
@@ -138,8 +138,8 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.ts'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { createStart } from '@tanstack/solid-start'
+declare module '@tanstack/solid-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>

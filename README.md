@@ -12,9 +12,7 @@ probably buggy too
 
 ### stack
 
-- react
+- solid
 - tanstack start
 - tanstack query
 - tanstack virtual
-- base ui
-- jotai

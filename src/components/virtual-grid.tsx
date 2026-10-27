@@ -1,28 +1,22 @@
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { ReactNode, Ref, useEffect, useRef, useState } from "react";
+import { createVirtualizer } from "@tanstack/solid-virtual";
+import { createEffect, createSignal, JSX, onCleanup, Ref } from "solid-js";
 
 const gap = { x: 12, y: 12 };
 
-export function VirtualGrid<T>({
-  entries,
-  children,
-  gridRef,
-  itemWidthInRem = 14,
-}: {
+export function VirtualGrid<T>(props: {
   entries: T[];
-  children: (entry: T) => ReactNode;
+  children: (entry: T) => JSX.Element;
   gridRef?: Ref<HTMLUListElement>;
   itemWidthInRem?: number;
 }) {
-  const parentRef = useRef<HTMLDivElement>(null);
+  let parent!: HTMLDivElement;
 
-  const [{ columns, itemSize }, setLayout] = useState({
+  const [layout, setLayout] = createSignal({
     columns: 1,
     itemSize: { height: 40, width: 300 },
   });
 
-  useEffect(() => {
-    const parent = parentRef.current;
+  createEffect(() => {
     if (!parent) return;
 
     const update = () => {
@@ -30,7 +24,7 @@ export function VirtualGrid<T>({
       const rem = parseFloat(
         getComputedStyle(document.documentElement).fontSize,
       );
-      const minWidth = itemWidthInRem * rem;
+      const minWidth = (props.itemWidthInRem ?? 14) * rem;
 
       const columns = Math.max(
         1,
@@ -56,46 +50,47 @@ export function VirtualGrid<T>({
     observer.observe(parent);
     update();
 
-    return () => observer.disconnect();
-  }, [itemWidthInRem]);
+    onCleanup(() => observer.disconnect());
+  });
 
-  const rowVirtualizer = useVirtualizer({
-    count: Math.ceil(entries.length / columns),
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => itemSize.height,
+  const rowVirtualizer = createVirtualizer({
+    get count() {
+      return Math.ceil(props.entries.length / layout().columns);
+    },
+    getScrollElement: () => parentRef,
+    estimateSize: () => layout().itemSize.height,
     gap: gap.y,
     overscan: 8,
     paddingEnd: 256,
   });
 
   return (
-    <div ref={parentRef} className="h-full overflow-x-hidden overflow-y-auto">
+    <div ref={parentRef} class="h-full overflow-x-hidden overflow-y-auto">
       <ul
-        ref={gridRef}
-        className="relative"
+        ref={props.gridRef}
+        class="relative"
         style={{
-          height: rowVirtualizer.getTotalSize(),
+          height: rowVirtualizer.getTotalSize() + "px",
           width: "100%",
         }}
       >
         {rowVirtualizer.getVirtualItems().flatMap((row) =>
-          Array.from({ length: columns }, (_, column) => {
-            const index = row.index * columns + column;
-            const entry = entries[index];
+          Array.from({ length: layout().columns }, (_, column) => {
+            const index = row.index * layout().columns + column;
+            const entry = props.entries[index];
 
             if (!entry) return;
 
             return (
               <li
-                key={JSON.stringify(entry)}
-                className="absolute"
+                class="absolute"
                 style={{
-                  height: itemSize.height,
-                  width: itemSize.width,
-                  transform: `translate(${column * (itemSize.width + gap.x)}px, ${row.start}px)`,
+                  height: layout().itemSize.height + "px",
+                  width: layout().itemSize.width + "px",
+                  transform: `translate(${column * (layout().itemSize.width + gap.x)}px, ${row.start}px)`,
                 }}
               >
-                {children(entry)}
+                {props.children(entry)}
               </li>
             );
           }),

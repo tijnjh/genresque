@@ -1,5 +1,5 @@
 import { isIos } from "../utils";
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn } from "@tanstack/solid-start";
 import * as isa from "itunes-store-api";
 
 // apple added some crazy redirect stuff with this api on on ios so i have to do it server side on there

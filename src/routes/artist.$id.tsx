@@ -8,9 +8,10 @@ import {
   getGenresByArtistId,
 } from "../lib/api/server-functions";
 import { genreNameToSlug } from "../lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/solid-query";
+import { createFileRoute } from "@tanstack/solid-router";
 import { ResultAlbum } from "itunes-store-api";
+import { For, Show } from "solid-js";
 
 export const Route = createFileRoute("/artist/$id")({
   component: RouteComponent,
@@ -19,15 +20,15 @@ export const Route = createFileRoute("/artist/$id")({
 function RouteComponent() {
   const params = Route.useParams();
 
-  const artistDetailsQuery = useQuery({
-    queryKey: ["artist-details", params.id],
-    queryFn: async () => getArtistDetailsById({ data: params.id }),
-  });
+  const artistDetailsQuery = useQuery(() => ({
+    queryKey: ["artist-details", params().id],
+    queryFn: async () => getArtistDetailsById({ data: params().id }),
+  }));
 
-  const artistGenresQuery = useQuery({
-    queryKey: ["artist-genres", params.id],
-    queryFn: async () => await getGenresByArtistId({ data: params.id }),
-  });
+  const artistGenresQuery = useQuery(() => ({
+    queryKey: ["artist-genres", params().id],
+    queryFn: async () => await getGenresByArtistId({ data: params().id }),
+  }));
 
   return (
     <Layout
@@ -37,49 +38,46 @@ function RouteComponent() {
 
       leading={
         <>
-          <SpotifyWidget id={params.id} type="artist" className="h-38!" />
+          <SpotifyWidget id={params().id} type="artist" class="h-38!" />
 
           <AsyncView query={artistGenresQuery}>
-            {(data) =>
-              !!data.length && (
-                <>
-                  <span className="section-divider">
-                    genres this artist is in
-                  </span>
+            {(data) => (
+              <Show when={data.length}>
+                <span class="section-divider">genres this artist is in</span>
 
-                  <div className="cool-grid">
-                    {data.map((genre) => (
+                <div class="cool-grid">
+                  <For each={data}>
+                    {(genre) => (
                       <Chip
                         to="/genre/$slug"
-                        key={genre}
                         params={{ slug: genreNameToSlug(genre) }}
                       >
                         {genre}
                       </Chip>
-                    ))}
-                  </div>
-                </>
-              )
-            }
+                    )}
+                  </For>
+                </div>
+              </Show>
+            )}
           </AsyncView>
         </>
       }
 
       trailing={
-        artistDetailsQuery.data?.name && (
-          <ArtistReleasesList artistName={artistDetailsQuery.data?.name} />
-        )
+        <Show when={artistDetailsQuery.data?.name}>
+          {(name) => <ArtistReleasesList artistName={name()} />}
+        </Show>
       }
     />
   );
 }
 
-function ArtistReleasesList({ artistName }: { artistName: string }) {
-  const artistAlbumsQuery = useQuery({
-    queryKey: ["artist-itunes-albums", artistName],
+function ArtistReleasesList(props: { artistName: string }) {
+  const artistAlbumsQuery = useQuery(() => ({
+    queryKey: ["artist-itunes-albums", props.artistName],
     queryFn: async () => {
       const artistItunesId = await itunes
-        .search(artistName, {
+        .search(props.artistName, {
           media: "music",
           entity: "musicArtist",
         })
@@ -87,7 +85,7 @@ function ArtistReleasesList({ artistName }: { artistName: string }) {
 
       if (!artistItunesId)
         throw new Error(
-          `could't find id for artist: -- ${artistName} -- on itunes`,
+          `could't find id for artist: -- ${props.artistName} -- on itunes`,
         );
 
       return await itunes
@@ -97,7 +95,7 @@ function ArtistReleasesList({ artistName }: { artistName: string }) {
         })
         .then((r) => r.results.filter((a) => a.wrapperType === "collection"));
     },
-  });
+  }));
 
   return (
     <AsyncView query={artistAlbumsQuery}>
@@ -105,28 +103,30 @@ function ArtistReleasesList({ artistName }: { artistName: string }) {
         const organizedReleases = organizeArtistReleases(releases);
 
         return (
-          <div className="lg:overflow-y-auto">
-            {Object.entries(organizedReleases).map(
-              ([name, releases]) =>
-                !!releases.length && (
-                  <div key={name} className="flex flex-col gap-3">
-                    <span className="section-divider">{name}</span>
+          <div class="lg:overflow-y-auto">
+            <For each={Object.entries(organizedReleases)}>
+              {([name, releases]) => (
+                <Show when={releases.length}>
+                  <div class="flex flex-col gap-3">
+                    <span class="section-divider">{name}</span>
 
-                    <div className="cool-grid">
-                      {releases.map((release) => (
-                        <Chip
-                          key={release.collectionId}
-                          leading={release.artworkUrl60}
-                          to="/album/$itunesId"
-                          params={{ itunesId: release.collectionId }}
-                        >
-                          {streamlineReleaseName(release.collectionName)}
-                        </Chip>
-                      ))}
+                    <div class="cool-grid">
+                      <For each={releases}>
+                        {(release) => (
+                          <Chip
+                            leading={release.artworkUrl60}
+                            to="/album/$itunesId"
+                            params={{ itunesId: release.collectionId }}
+                          >
+                            {streamlineReleaseName(release.collectionName)}
+                          </Chip>
+                        )}
+                      </For>
                     </div>
                   </div>
-                ),
-            )}
+                </Show>
+              )}
+            </For>
           </div>
         );
       }}
