@@ -7,9 +7,11 @@ import { createServerFn } from "@tanstack/solid-start";
 import ky from "ky";
 import * as v from "valibot";
 
-export const getAllGenres = createServerFn().handler(getAllGenres_serverOnly);
+export const everynoise_getAllGenres = createServerFn().handler(
+  getAllGenres_serverOnly,
+);
 
-export const getGenreDetails = createServerFn()
+export const everynoise_getGenreDetails = createServerFn()
   .validator(v.string())
   .handler(async ({ data }) => {
     const genreSlug = genreNameToSlug(data);
@@ -55,7 +57,7 @@ export const getGenreDetails = createServerFn()
     return { genreName, artists, links, relatedGenres };
   });
 
-export const getGenresByArtistId = createServerFn()
+export const everynoise_getGenresByArtistId = createServerFn()
   .validator(v.string())
   .handler(async ({ data }) => {
     const res = await ky
@@ -66,7 +68,7 @@ export const getGenresByArtistId = createServerFn()
     return (Object.values(res)[0] as string[]) ?? [];
   });
 
-export const lookupArtists = createServerFn()
+export const spotify_lookupArtists = createServerFn()
   .validator(v.string())
   .handler(async ({ data }) => {
     const spotifyRes = await $spotify("/search", {
@@ -101,7 +103,7 @@ export const lookupArtists = createServerFn()
     return filteredArtists;
   });
 
-export const getArtistDetailsById = createServerFn()
+export const spotify_getArtistDetailsById = createServerFn()
   .validator(v.string())
   .handler(async ({ data }) => {
     const res = await $spotify(`artists/${data}`).json(

@@ -1,9 +1,9 @@
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
-import { lookupArtists } from "../lib/api/server-functions";
+import { spotify_lookupArtists } from "../lib/api/server-functions";
 import { siteName } from "../lib/constants";
-import { createFileRoute } from "@tanstack/solid-router";
-import { createSignal, For, onSettled, Show } from "solid-js";
+import { createFileRoute, redirect } from "@tanstack/solid-router";
+import { createSignal, For, Show } from "solid-js";
 import * as v from "valibot";
 
 export const Route = createFileRoute("/search")({
@@ -23,7 +23,18 @@ export const Route = createFileRoute("/search")({
 
   loader: async ({ deps: { search } }) => {
     if (!search.q) return;
-    const artists = await lookupArtists({ data: search.q });
+    const artists = await spotify_lookupArtists({ data: search.q });
+
+    if (search.lucky) {
+      const topResultId = artists[0].id;
+
+      throw redirect({
+        to: "/artist/$spotifyId",
+        params: { spotifyId: topResultId },
+        replace: true,
+      });
+    }
+
     return { artists };
   },
 
@@ -36,18 +47,6 @@ function RouteComponent() {
   const data = Route.useLoaderData();
 
   const [searchTerm, setSearchTerm] = createSignal<string>();
-
-  onSettled(() => {
-    if (!search().lucky) return;
-
-    const topResultId = data()?.artists[0].id;
-
-    navigate({
-      to: "/artist/$id",
-      params: { id: topResultId! },
-      replace: true,
-    });
-  });
 
   return (
     <Layout
@@ -87,9 +86,9 @@ function RouteComponent() {
           <For each={data()?.artists}>
             {(artist) => (
               <Chip
-                to="/artist/$id"
+                to="/artist/$spotifyId"
                 leading={artist.images.at(-1)?.url}
-                params={{ id: artist.id }}
+                params={{ spotifyId: artist.id }}
               >
                 {artist.name}
               </Chip>

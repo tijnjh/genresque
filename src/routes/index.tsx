@@ -1,28 +1,28 @@
-import { AsyncView } from "../components/async-view";
+import {} from "../components/async-view";
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { PlayButton } from "../components/play-button";
 import { VirtualGrid } from "../components/virtual-grid";
 import { useEnumToggle } from "../hooks/use-enum-toggle";
 import { useQueryState } from "../hooks/use-query-state";
-import { getAllGenres } from "../lib/api/server-functions";
+import { everynoise_getAllGenres } from "../lib/api/server-functions";
 import { siteUrl } from "../lib/constants";
 import { genreNameToSlug } from "../lib/utils";
 import { sortHexColorsToGradient } from "../lib/utils/sort-hex-to-gradient";
-import { useQuery } from "@tanstack/solid-query";
 import { createFileRoute } from "@tanstack/solid-router";
 import { createMemo, Show } from "solid-js";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const genres = await everynoise_getAllGenres();
+    return { genres };
+  },
   head: () => ({ links: [{ rel: "canonical", href: siteUrl }] }),
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const genresQuery = useQuery(() => ({
-    queryKey: ["genres"],
-    queryFn: async () => await getAllGenres(),
-  }));
+  const data = Route.useLoaderData();
 
   const [searchTerm, setSearchTerm] = useQueryState("q", {
     defaultValue: "",
@@ -84,16 +84,12 @@ function RouteComponent() {
         ),
       }}
     >
-      <AsyncView query={genresQuery}>
-        {(genres) => (
-          <Genres
-            filterType={filterType.current()}
-            sortType={sortType.current()}
-            searchTerm={searchTerm()}
-            genres={genres}
-          />
-        )}
-      </AsyncView>
+      <Genres
+        filterType={filterType.current()}
+        sortType={sortType.current()}
+        searchTerm={searchTerm()}
+        genres={data().genres}
+      />
     </Layout>
   );
 }

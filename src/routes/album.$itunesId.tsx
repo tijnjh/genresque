@@ -1,18 +1,32 @@
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { PlayButton } from "../components/play-button";
-import { getAlbum } from "../lib/api/album";
+import { $itunes } from "../lib/api/clients/itunes";
 import { siteName, siteUrl } from "../lib/constants";
 import { fmt } from "../lib/utils";
 import { createFileRoute, notFound, useRouter } from "@tanstack/solid-router";
 import { For } from "solid-js";
+import * as itunes from "itunes-store-api";
+import { PlatformLinks } from "../components/platform-links";
+import { trimItunesCollectionPostfix } from "../lib/utils/trim-itunes-collection-postfix";
 
 export const Route = createFileRoute("/album/$itunesId")({
   loader: async ({ params }) => {
     if (!/^\d+$/.test(params.itunesId)) throw notFound();
-    const data = await getAlbum({ data: Number(params.itunesId) });
-    if (!data) throw notFound();
-    return data;
+
+    const response = await $itunes.lookup("id", Number(params.itunesId), {
+      media: "music",
+      entity: "song",
+    });
+
+    // for some reason the first result of a song query on an album returns the album itself..
+    // weird but not complaining since it saves us a request :)
+    const album = response.results[0] as unknown as itunes.ResultAlbum;
+    if (album.collectionType !== "Album") throw notFound();
+
+    const tracks = response.results.filter((r) => r.wrapperType === "track");
+
+    return { album, tracks };
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) return {};
@@ -72,6 +86,14 @@ function RouteComponent() {
       search: { lucky: true, q: data().album.artistName },
     }).href;
 
+  const streamlinedCollectionName = () =>
+    trimItunesCollectionPostfix(data().album.collectionName);
+
+  const constructedSearchQuery = () =>
+    encodeURIComponent(
+      `${data().album.artistName} ${streamlinedCollectionName()}`,
+    );
+
   return (
     <Layout
       header={{ title: data().album.collectionName, backHref: backHref() }}
@@ -90,12 +112,51 @@ function RouteComponent() {
             {data().album.artistName}
           </Chip>
           <p>
-            Released{" "}
+            released{" "}
             {fmt("date", new Date(data().album.releaseDate), {
               dateStyle: "long",
             })}
           </p>
-          <p>Genre: {data().album.primaryGenreName}</p>
+          <p
+            class="cursor-help"
+            title="this genre comes from itunes and is often vague or non-specific"
+          >
+            genre: {data().album.primaryGenreName}
+          </p>
+
+          <PlatformLinks
+            links={[
+              {
+                name: "last.fm",
+                icon: "/last-fm.ico",
+                href: `https://last.fm/music/${data().album.artistName}/${streamlinedCollectionName()}`,
+              },
+              {
+                name: "spotify",
+                icon: "/spotify-com.png",
+                href: `https://open.spotify.com/search/${constructedSearchQuery()}`,
+              },
+              {
+                name: "apple music",
+                icon: "/music-apple-com.png",
+                href: `https://music.apple.com/artist/${data().album.artistId}`,
+              },
+              {
+                name: "AOTY",
+                href: `https://www.albumoftheyear.org/search/albums/?q=${constructedSearchQuery()}`,
+              },
+              {
+                name: "bandcamp",
+                icon: "/bandcamp-com.png",
+                href: `https://bandcamp.com/search?q=${constructedSearchQuery()}&item_type=a`,
+              },
+              {
+                name: "soundcloak",
+                // icon: "/sc-maid-zone.png",
+                href: `https://sc.maid.zone/search?q=${constructedSearchQuery()}&type=playlists`,
+              },
+            ]}
+          />
         </div>
       }
       trailing={

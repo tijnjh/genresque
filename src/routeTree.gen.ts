@@ -14,7 +14,7 @@ import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AlbumItunesIdRouteImport } from './routes/album.$itunesId'
-import { Route as ArtistIdRouteImport } from './routes/artist.$id'
+import { Route as ArtistSpotifyIdRouteImport } from './routes/artist.$spotifyId'
 import { Route as GenreSlugRouteImport } from './routes/genre.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -42,9 +42,9 @@ const AlbumItunesIdRoute = AlbumItunesIdRouteImport.update({
   path: '/album/$itunesId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArtistIdRoute = ArtistIdRouteImport.update({
-  id: '/artist/$id',
-  path: '/artist/$id',
+const ArtistSpotifyIdRoute = ArtistSpotifyIdRouteImport.update({
+  id: '/artist/$spotifyId',
+  path: '/artist/$spotifyId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GenreSlugRoute = GenreSlugRouteImport.update({
@@ -59,7 +59,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/album/$itunesId': typeof AlbumItunesIdRoute
-  '/artist/$id': typeof ArtistIdRoute
+  '/artist/$spotifyId': typeof ArtistSpotifyIdRoute
   '/genre/$slug': typeof GenreSlugRoute
 }
 export interface FileRoutesByTo {
@@ -68,7 +68,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/album/$itunesId': typeof AlbumItunesIdRoute
-  '/artist/$id': typeof ArtistIdRoute
+  '/artist/$spotifyId': typeof ArtistSpotifyIdRoute
   '/genre/$slug': typeof GenreSlugRoute
 }
 export interface FileRoutesById {
@@ -78,7 +78,7 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/album/$itunesId': typeof AlbumItunesIdRoute
-  '/artist/$id': typeof ArtistIdRoute
+  '/artist/$spotifyId': typeof ArtistSpotifyIdRoute
   '/genre/$slug': typeof GenreSlugRoute
 }
 export interface FileRouteTypes {
@@ -89,7 +89,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/sitemap.xml'
     | '/album/$itunesId'
-    | '/artist/$id'
+    | '/artist/$spotifyId'
     | '/genre/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -98,7 +98,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/sitemap.xml'
     | '/album/$itunesId'
-    | '/artist/$id'
+    | '/artist/$spotifyId'
     | '/genre/$slug'
   id:
     | '__root__'
@@ -107,7 +107,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/sitemap.xml'
     | '/album/$itunesId'
-    | '/artist/$id'
+    | '/artist/$spotifyId'
     | '/genre/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -117,7 +117,7 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AlbumItunesIdRoute: typeof AlbumItunesIdRoute
-  ArtistIdRoute: typeof ArtistIdRoute
+  ArtistSpotifyIdRoute: typeof ArtistSpotifyIdRoute
   GenreSlugRoute: typeof GenreSlugRoute
 }
 
@@ -158,11 +158,11 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AlbumItunesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/artist/$id': {
-      id: '/artist/$id'
-      path: '/artist/$id'
-      fullPath: '/artist/$id'
-      preLoaderRoute: typeof ArtistIdRouteImport
+    '/artist/$spotifyId': {
+      id: '/artist/$spotifyId'
+      path: '/artist/$spotifyId'
+      fullPath: '/artist/$spotifyId'
+      preLoaderRoute: typeof ArtistSpotifyIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/genre/$slug': {
@@ -181,7 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AlbumItunesIdRoute: AlbumItunesIdRoute,
-  ArtistIdRoute: ArtistIdRoute,
+  ArtistSpotifyIdRoute: ArtistSpotifyIdRoute,
   GenreSlugRoute: GenreSlugRoute,
 }
 export const routeTree = rootRouteImport

@@ -2,14 +2,14 @@ import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { PlayButton } from "../components/play-button";
 import { SpotifyWidget } from "../components/spotify-widget";
-import { getGenreDetails } from "../lib/api/server-functions";
+import { everynoise_getGenreDetails } from "../lib/api/server-functions";
 import { siteName, siteUrl } from "../lib/constants";
 import { findSoundOfPlaylistId, genreNameToSlug } from "../lib/utils";
 import { createFileRoute } from "@tanstack/solid-router";
 import { For, Show } from "solid-js";
 
 export const Route = createFileRoute("/genre/$slug")({
-  loader: ({ params }) => getGenreDetails({ data: params.slug }),
+  loader: ({ params }) => everynoise_getGenreDetails({ data: params.slug }),
   head: ({ loaderData, params }) => ({
     meta: [
       {
@@ -74,8 +74,8 @@ function RouteComponent() {
             <For each={genre().artists}>
               {(artist) => (
                 <Chip
-                  to="/artist/$id"
-                  params={{ id: artist.id }}
+                  to="/artist/$spotifyId"
+                  params={{ spotifyId: artist.id }}
                   trailing={
                     <PlayButton
                       class="btn size-9 justify-center"
