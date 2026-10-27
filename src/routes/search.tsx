@@ -2,12 +2,19 @@ import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { lookupArtists } from "../lib/api/server-functions";
+import { siteName } from "../lib/constants";
 import { useQuery } from "@tanstack/solid-query";
 import { createFileRoute } from "@tanstack/solid-router";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import * as v from "valibot";
 
 export const Route = createFileRoute("/search")({
+  head: () => ({
+    meta: [
+      { title: `Search artists | ${siteName}` },
+      { name: "robots", content: "noindex,follow" },
+    ],
+  }),
   validateSearch: v.object({
     q: v.optional(v.string()),
     // like googles "feeling lucky" button it will auto open the first result

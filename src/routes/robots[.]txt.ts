@@ -1,0 +1,14 @@
+import { siteUrl } from "../lib/constants";
+import { createFileRoute } from "@tanstack/solid-router";
+
+export const Route = createFileRoute("/robots.txt")({
+  server: {
+    handlers: {
+      GET: () =>
+        new Response(
+          `User-agent: *\nAllow: /\nSitemap: ${siteUrl}/sitemap.xml\n`,
+          { headers: { "Content-Type": "text/plain; charset=utf-8" } },
+        ),
+    },
+  },
+});

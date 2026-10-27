@@ -6,12 +6,16 @@ import { VirtualGrid } from "../components/virtual-grid";
 import { useEnumToggle } from "../hooks/use-enum-toggle";
 import { useQueryState } from "../hooks/use-query-state";
 import { getAllGenres } from "../lib/api/server-functions";
+import { siteUrl } from "../lib/constants";
 import { genreNameToSlug } from "../lib/utils";
 import { useQuery } from "@tanstack/solid-query";
 import { createFileRoute } from "@tanstack/solid-router";
 import { Show } from "solid-js";
 
-export const Route = createFileRoute("/")({ component: RouteComponent });
+export const Route = createFileRoute("/")({
+  head: () => ({ links: [{ rel: "canonical", href: siteUrl }] }),
+  component: RouteComponent,
+});
 
 function RouteComponent() {
   const genresQuery = useQuery(() => ({

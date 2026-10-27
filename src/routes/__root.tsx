@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import { ErrorAlert } from "../components/error-alert";
 import { MiniPlayer } from "../components/mini-player";
+import { siteName } from "../lib/constants";
 import { getErrorMessage } from "../lib/utils";
 import styleCss from "../style.css?url";
 import { HydrationScript } from "@solidjs/web";
@@ -25,6 +26,12 @@ export const Route = createRootRoute({
         name: "viewport",
         content: "width=device-width, initial-scale=1",
       },
+      { title: `${siteName} | Explore music genres and albums` },
+      {
+        name: "description",
+        content: `Explore music genres, discover artists, and browse their albums and tracks on ${siteName}.`,
+      },
+      { property: "og:site_name", content: siteName },
     ],
     links: [{ href: styleCss, rel: "stylesheet" }],
   }),
@@ -76,7 +83,7 @@ function RootComponent() {
 function Aside() {
   return (
     <aside class="z-999 flex h-full flex-col gap-3 border-zinc-300-700 p-3 max-md:order-1 max-md:border-t md:w-60 md:border-r">
-      <span class="h-9 text-2xl font-bold max-md:hidden">genresque</span>
+      <span class="h-9 text-2xl font-bold max-md:hidden">{siteName}</span>
 
       <div class="flex gap-3 md:contents">
         <For each={tabs}>

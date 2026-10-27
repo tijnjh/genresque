@@ -1,3 +1,5 @@
+# noisedex
+
 music explorer client thingy
 
 uses both the spotify and itunes api for some things

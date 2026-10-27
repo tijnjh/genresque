@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AlbumItunesIdRouteImport } from './routes/album.$itunesId'
 import { Route as ArtistIdRouteImport } from './routes/artist.$id'
 import { Route as GenreSlugRouteImport } from './routes/genre.$slug'
@@ -20,9 +22,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AlbumItunesIdRoute = AlbumItunesIdRouteImport.update({
@@ -43,14 +55,18 @@ const GenreSlugRoute = GenreSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/album/$itunesId': typeof AlbumItunesIdRoute
   '/artist/$id': typeof ArtistIdRoute
   '/genre/$slug': typeof GenreSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/album/$itunesId': typeof AlbumItunesIdRoute
   '/artist/$id': typeof ArtistIdRoute
   '/genre/$slug': typeof GenreSlugRoute
@@ -58,7 +74,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/album/$itunesId': typeof AlbumItunesIdRoute
   '/artist/$id': typeof ArtistIdRoute
   '/genre/$slug': typeof GenreSlugRoute
@@ -66,13 +84,28 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/search' | '/album/$itunesId' | '/artist/$id' | '/genre/$slug'
+    | '/'
+    | '/robots.txt'
+    | '/search'
+    | '/sitemap.xml'
+    | '/album/$itunesId'
+    | '/artist/$id'
+    | '/genre/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/search' | '/album/$itunesId' | '/artist/$id' | '/genre/$slug'
+  to:
+    | '/'
+    | '/robots.txt'
+    | '/search'
+    | '/sitemap.xml'
+    | '/album/$itunesId'
+    | '/artist/$id'
+    | '/genre/$slug'
   id:
     | '__root__'
     | '/'
+    | '/robots.txt'
     | '/search'
+    | '/sitemap.xml'
     | '/album/$itunesId'
     | '/artist/$id'
     | '/genre/$slug'
@@ -80,7 +113,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   SearchRoute: typeof SearchRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AlbumItunesIdRoute: typeof AlbumItunesIdRoute
   ArtistIdRoute: typeof ArtistIdRoute
   GenreSlugRoute: typeof GenreSlugRoute
@@ -95,11 +130,25 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/album/$itunesId': {
@@ -128,7 +177,9 @@ declare module '@tanstack/solid-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   SearchRoute: SearchRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   AlbumItunesIdRoute: AlbumItunesIdRoute,
   ArtistIdRoute: ArtistIdRoute,
   GenreSlugRoute: GenreSlugRoute,
