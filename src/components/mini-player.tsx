@@ -5,11 +5,11 @@ import { createEffect, on, Show } from "solid-js";
 export function MiniPlayer() {
   let audioRef!: HTMLAudioElement;
 
-  createEffect(() => {
-    on(nowPlaying, () => {
-      audioRef?.play();
-    });
-  });
+  createEffect(
+    on(nowPlaying, (track) => {
+      if (track.url) audioRef?.play().catch(() => {});
+    }),
+  );
 
   const cleanTitle = () => nowPlaying().title?.replace("e.g.", "").trim();
 

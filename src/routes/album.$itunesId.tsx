@@ -51,19 +51,20 @@ function RouteComponent() {
 
   const router = useRouter();
 
-  const { href: backHref } = router.buildLocation({
-    to: "/search",
-    search: {
-      lucky: true,
-      q: itunesAlbumDetailsQuery.data?.artistName,
-    },
-  });
+  const backHref = () =>
+    router.buildLocation({
+      to: "/search",
+      search: {
+        lucky: true,
+        q: itunesAlbumDetailsQuery.data?.artistName,
+      },
+    }).href;
 
   return (
     <Layout
       header={{
         title: itunesAlbumDetailsQuery.data?.collectionName ?? "",
-        backHref,
+        backHref: backHref(),
       }}
 
       leading={

@@ -15,10 +15,6 @@ import {
 import { For } from "solid-js";
 import { HydrationScript } from "solid-js/web";
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false } },
-});
-
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -42,6 +38,10 @@ const tabs = [
 ] as const;
 
 function RootComponent() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
   return (
     <QueryClientProvider client={queryClient}>
       <html lang="en" class="pointer-coarse:overscroll-none">

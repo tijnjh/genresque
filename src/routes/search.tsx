@@ -3,11 +3,9 @@ import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { lookupArtists } from "../lib/api/server-functions";
 import { useQuery } from "@tanstack/solid-query";
-import { createFileRoute, LinkOptions } from "@tanstack/solid-router";
-import { createSignal, For, Show } from "solid-js";
+import { createFileRoute } from "@tanstack/solid-router";
+import { createEffect, createSignal, For, Show } from "solid-js";
 import * as v from "valibot";
-
-let x: LinkOptions = { to: "/album/$itunesId", params: {} };
 
 export const Route = createFileRoute("/search")({
   validateSearch: v.object({
@@ -31,18 +29,16 @@ function RouteComponent() {
 
   const [searchQuery, setSearchQuery] = createSignal<string>();
 
-  // scuffed asl
-  if (params().lucky) {
-    if (!artistsQuery.data?.length) {
-      return <div />;
-    } else {
+  createEffect(() => {
+    const artist = artistsQuery.data?.[0];
+    if (params().lucky && artist) {
       navigate({
         to: "/artist/$id",
-        params: { id: artistsQuery.data[0].id },
+        params: { id: artist.id },
         replace: true,
       });
     }
-  }
+  });
 
   return (
     <Layout

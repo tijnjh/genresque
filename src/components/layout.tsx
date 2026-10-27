@@ -1,7 +1,7 @@
 import { fixRelativeUrl } from "../lib/utils";
 import { Link } from "@tanstack/solid-router";
 import { cn } from "cn";
-import { ComponentProps, For, Show } from "solid-js";
+import { children, ComponentProps, createMemo, For, Show } from "solid-js";
 import { JSX } from "solid-js";
 import { MergeExclusive } from "type-fest";
 
@@ -11,16 +11,19 @@ export function Layout(
     { leading: JSX.Element; trailing: JSX.Element }
   >,
 ) {
+  const header = createMemo(() => props.header);
+  const content = children(() => props.children);
+
   return (
     <div class="grid grid-rows-[1fr_auto] overflow-hidden md:grid-rows-[auto_1fr]">
-      <Header {...props.header} />
+      <Header {...header()} />
 
       <div class="grid overflow-y-auto p-3">
         <Show
-          when={props.children}
+          when={content()}
           fallback={
             <>
-              <Title title={props.header.title} />
+              <Title title={header().title} />
 
               <main class="grid h-full grid-cols-1 gap-6 lg:grid-cols-[auto_1fr] lg:overflow-hidden">
                 <div class="flex w-full flex-col gap-3 lg:w-72 xl:w-115">
@@ -32,8 +35,8 @@ export function Layout(
           }
         >
           <main class="overflow-hidden">
-            <Title title={props.header.title} />
-            {props.children}
+            <Title title={header().title} />
+            {content()}
           </main>
         </Show>
       </div>
@@ -58,6 +61,8 @@ export function Header(
     { children: JSX.Element }
   >,
 ) {
+  const content = children(() => props.children);
+
   // we hide this button cus its too wide and doesn't provide much functionality in this case
   const links = () =>
     props.links?.filter((l) => l.text !== "Every Noise at Once");
@@ -66,7 +71,7 @@ export function Header(
     <header
       class={cn([
         "flex gap-3 overflow-hidden border-zinc-300-700 p-3 max-md:order-1 max-md:flex-col max-md:border-t md:h-15 md:items-center md:justify-between md:border-b",
-        !props.backHref && !props.children && "max-md:hidden",
+        !props.backHref && !content() && "max-md:hidden",
       ])}
     >
       <div
@@ -86,7 +91,7 @@ export function Header(
       </div>
 
       <Show
-        when={props.children}
+        when={content()}
         fallback={
           <Show when={links()?.length}>
             <ul class="flex scrollbar-none gap-3 overflow-x-auto">
