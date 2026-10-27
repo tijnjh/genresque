@@ -2,7 +2,7 @@ import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { SpotifyWidget } from "../components/spotify-widget";
-import { itunes } from "../lib/api/itunes";
+import { $itunes } from "../lib/api/clients/itunes";
 import {
   getArtistDetailsById,
   getGenresByArtistId,
@@ -76,7 +76,7 @@ function ArtistReleasesList(props: { artistName: string }) {
   const artistAlbumsQuery = useQuery(() => ({
     queryKey: ["artist-itunes-albums", props.artistName],
     queryFn: async () => {
-      const artistItunesId = await itunes
+      const artistItunesId = await $itunes
         .search(props.artistName, {
           media: "music",
           entity: "musicArtist",
@@ -88,7 +88,7 @@ function ArtistReleasesList(props: { artistName: string }) {
           `could't find id for artist: -- ${props.artistName} -- on itunes`,
         );
 
-      return await itunes
+      return await $itunes
         .lookup("id", artistItunesId, {
           media: "music",
           entity: "album",

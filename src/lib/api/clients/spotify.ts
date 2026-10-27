@@ -1,10 +1,5 @@
-import { everynoiseUrl } from "../constants";
-import { obtainSpotifyToken } from "./spotify-token";
+import { obtainSpotifyToken } from "../spotify-token";
 import ky from "ky";
-
-export const $everynoise = ky.create({
-  baseUrl: everynoiseUrl,
-});
 
 export const $spotify = ky.create({
   baseUrl: "https://api.spotify.com",

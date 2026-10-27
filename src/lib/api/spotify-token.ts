@@ -1,4 +1,4 @@
-import { $everynoise } from "./clients";
+import { $everynoise } from "./clients/everynoise";
 import * as v from "valibot";
 
 let cachedToken: {

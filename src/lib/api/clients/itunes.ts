@@ -1,14 +1,14 @@
-import { isIos } from "../utils";
+import { isIos } from "../../utils";
 import { createServerFn } from "@tanstack/solid-start";
-import * as isa from "itunes-store-api";
+import * as itunes from "itunes-store-api";
 
 // apple added some crazy redirect stuff with this api on on ios so i have to do it server side on there
 const proxyItunes = createServerFn()
   .validator(
     (
       data:
-        | ["search", ...Parameters<typeof isa.search>]
-        | ["lookup", ...Parameters<typeof isa.lookup>],
+        | ["search", ...Parameters<typeof itunes.search>]
+        | ["lookup", ...Parameters<typeof itunes.lookup>],
     ) => data,
   )
 
@@ -16,19 +16,19 @@ const proxyItunes = createServerFn()
     switch (data[0]) {
       case "search": {
         const [, search, options] = data;
-        return isa.search(search, options);
+        return itunes.search(search, options);
       }
       case "lookup": {
         const [, type, value, options] = data;
-        return isa.lookup(type, value, options);
+        return itunes.lookup(type, value, options);
       }
     }
   });
 
 // more typed wrapper
 const proxied: {
-  search: typeof isa.search;
-  lookup: typeof isa.lookup;
+  search: typeof itunes.search;
+  lookup: typeof itunes.lookup;
 } = {
   search: (search, options) =>
     // @ts-expect-error
@@ -39,4 +39,4 @@ const proxied: {
 };
 
 // if not on ios you can just call itunes from the client directly
-export const itunes = isIos() ? proxied : isa;
+export const $itunes = isIos() ? proxied : itunes;

@@ -2,7 +2,7 @@ import genres from "../../data/genres.gen.csv?raw";
 import { everynoiseUrl } from "../constants";
 import { Scrappy } from "../scrappy";
 import { genreNameToSlug } from "../utils";
-import { $spotify } from "./clients";
+import { $spotify } from "./clients/spotify";
 import { createServerFn } from "@tanstack/solid-start";
 import ky from "ky";
 import CSV from "papaparse";

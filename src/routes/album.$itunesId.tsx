@@ -2,7 +2,7 @@ import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { PlayButton } from "../components/play-button";
-import { itunes } from "../lib/api/itunes";
+import { $itunes } from "../lib/api/clients/itunes";
 import { fmt } from "../lib/utils";
 import { useQuery } from "@tanstack/solid-query";
 import { createFileRoute, useRouter } from "@tanstack/solid-router";
@@ -26,7 +26,7 @@ function RouteComponent() {
   const itunesAlbumDetailsQuery = useQuery(() => ({
     queryKey: ["itunes-album-details", params().itunesId],
     queryFn: async () =>
-      await itunes
+      await $itunes
         .lookup("id", params().itunesId, {
           media: "music",
           entity: "album",
@@ -37,7 +37,7 @@ function RouteComponent() {
   const albumTracksQuery = useQuery(() => ({
     queryKey: ["itunes-album-tracks", params().itunesId],
     queryFn: async () =>
-      await itunes
+      await $itunes
         .lookup("id", params().itunesId, {
           media: "music",
           entity: "song",
