@@ -1,18 +1,18 @@
 import { nowPlayingAtom } from "../lib/atoms";
-import * as Base from "@base-ui/react";
 import { useAtom } from "jotai";
+import { ButtonHTMLAttributes } from "react";
 
 export function PlayButton({
   track,
   ...props
-}: Base.ButtonProps & {
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
   track: { title: string | null; url: string | null };
 }) {
   const [nowPlaying, setNowPlaying] = useAtom(nowPlayingAtom);
   const isThisTrackPlaying = nowPlaying.url === track.url;
 
   return (
-    <Base.Button
+    <button
       {...props}
       onClick={() => {
         isThisTrackPlaying
@@ -21,6 +21,6 @@ export function PlayButton({
       }}
     >
       {isThisTrackPlaying ? "☐" : "▶︎"}
-    </Base.Button>
+    </button>
   );
 }

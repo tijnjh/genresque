@@ -2,7 +2,6 @@ import { AsyncView } from "../components/async-view";
 import { Chip } from "../components/chip";
 import { Layout } from "../components/layout";
 import { lookupArtists } from "../lib/api/server-functions";
-import { Button, Input } from "@base-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
@@ -66,17 +65,17 @@ function RouteComponent() {
               });
             }}
           >
-            <Input
+            <input
               value={searchQuery ?? ""}
-              onValueChange={(val) => setSearchQuery(val)}
+              onChange={(e) => setSearchQuery(e.currentTarget.value)}
               className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
               name="q"
               placeholder="look up an artist"
             />
 
-            <Button type="submit" className="btn-inverse size-9 justify-center">
+            <button type="submit" className="btn-inverse size-9 justify-center">
               →
-            </Button>
+            </button>
           </form>
         ),
       }}

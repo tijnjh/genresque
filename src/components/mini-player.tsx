@@ -1,5 +1,4 @@
 import { nowPlayingAtom } from "../lib/atoms";
-import { Button } from "@base-ui/react";
 import { useAtom } from "jotai";
 import { useEffect, useRef, Activity } from "react";
 
@@ -22,12 +21,12 @@ export function MiniPlayer() {
             {cleanTitle}
           </span>
 
-          <Button
+          <button
             className="btn-inverse size-9 justify-center"
             onClick={() => setNowPlaying({ title: null, url: null })}
           >
             &times;
-          </Button>
+          </button>
         </div>
 
         {nowPlaying.url && (

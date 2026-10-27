@@ -1,12 +1,12 @@
-import { HTMLProps } from "@base-ui/react";
 import { cn } from "cn";
+import { IframeHTMLAttributes } from "react";
 
 export function SpotifyWidget({
   className,
   type,
   id,
   ...props
-}: HTMLProps & {
+}: IframeHTMLAttributes<HTMLIFrameElement> & {
   id: string;
   type: "playlist" | "album" | "artist";
 }) {

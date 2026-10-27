@@ -6,7 +6,6 @@ import { VirtualGrid } from "../components/virtual-grid";
 import { useEnumToggle } from "../hooks/use-enum-toggle";
 import { getAllGenres } from "../lib/api/server-functions";
 import { genreNameToSlug } from "../lib/utils";
-import { Button, Input } from "@base-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryState } from "nuqs";
@@ -52,13 +51,13 @@ function RouteComponent() {
         children: (
           <div className="flex gap-6">
             <div className="flex grow gap-3">
-              <Button className="btn" onClick={filterType.cycle}>
+              <button className="btn" onClick={filterType.cycle}>
                 {filterType.current}
-              </Button>
+              </button>
 
-              <Input
+              <input
                 value={searchTerm ?? ""}
-                onValueChange={(val) => setSearchTerm(val)}
+                onChange={(e) => setSearchTerm(e.currentTarget.value)}
                 className="h-9 min-w-0 grow bg-zinc-50-950 px-3"
                 name="q"
                 placeholder={
@@ -70,17 +69,17 @@ function RouteComponent() {
               />
 
               {filterType.current === "lookup" && (
-                <Button
+                <button
                   type="submit"
                   className="btn-inverse size-9 justify-center"
                 >
                   →
-                </Button>
+                </button>
               )}
 
-              {/* <Button className="btn" onClick={sortType.cycle}>
+              {/* <button className="btn" onClick={sortType.cycle}>
                 {sortType.current}
-              </Button> */}
+              </button> */}
             </div>
           </div>
         ),
