@@ -24,7 +24,7 @@ export function VirtualGrid<T>(props: {
       const rem = parseFloat(
         getComputedStyle(document.documentElement).fontSize,
       );
-      const minWidth = (props.itemWidthInRem ?? 14) * rem;
+      const minWidth = (props.itemWidthInRem ?? 12) * rem;
 
       const columns = Math.max(
         1,

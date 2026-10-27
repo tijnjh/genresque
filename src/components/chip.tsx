@@ -39,7 +39,9 @@ export function Chip(
         )}
       >
         {/* <Marquee initialPosition="start"> */}
-        <span class="px-3">{local.children}</span>
+        <span class="truncate px-3" title={local.children}>
+          {local.children}
+        </span>
         {/* </Marquee> */}
       </Link>
 
