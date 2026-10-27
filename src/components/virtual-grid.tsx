@@ -110,7 +110,7 @@ export function VirtualGrid<T>(props: {
 
   return (
     <div ref={parent} class="h-full overflow-x-hidden overflow-y-auto">
-      <div class="px-3">
+      <div class="p-3">
         <ul
           ref={[
             (el) => {
