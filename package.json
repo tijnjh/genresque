@@ -1,6 +1,12 @@
 {
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@9.15.9",
+  "pnpm": {
+    "patchedDependencies": {
+      "itunes-store-api@2.1.0": "patches/itunes-store-api@2.1.0.patch"
+    }
+  },
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",

@@ -5,7 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  itunes-store-api@2.1.0: cf53f5161efff7187ef8aec88bcfcbd059ff16464fdafb4ce2a926ca26d363e4
+  itunes-store-api@2.1.0:
+    hash: paf6epy4ukl2a3gvqgo2vlyyfa
+    path: patches/itunes-store-api@2.1.0.patch
 
 importers:
 
@@ -25,7 +27,7 @@ importers:
         version: 2.1.8
       itunes-store-api:
         specifier: ^2.1.0
-        version: 2.1.0(patch_hash=cf53f5161efff7187ef8aec88bcfcbd059ff16464fdafb4ce2a926ca26d363e4)
+        version: 2.1.0(patch_hash=paf6epy4ukl2a3gvqgo2vlyyfa)
       jotai:
         specifier: ^3.0.1
         version: 3.0.1
@@ -4574,7 +4576,7 @@ snapshots:
 
   isexe@2.0.0: {}
 
-  itunes-store-api@2.1.0(patch_hash=cf53f5161efff7187ef8aec88bcfcbd059ff16464fdafb4ce2a926ca26d363e4): {}
+  itunes-store-api@2.1.0(patch_hash=paf6epy4ukl2a3gvqgo2vlyyfa): {}
 
   jackspeak@3.4.3:
     dependencies:

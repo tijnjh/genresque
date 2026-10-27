@@ -4,5 +4,3 @@ minimumReleaseAgeExclude:
   - '@tanstack/query-core@5.105.0'
   - '@tanstack/solid-query@5.105.0'
 packages: []
-patchedDependencies:
-  itunes-store-api@2.1.0: patches/itunes-store-api@2.1.0.patch
