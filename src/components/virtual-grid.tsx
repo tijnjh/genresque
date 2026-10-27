@@ -57,7 +57,7 @@ export function VirtualGrid<T>(props: {
     get count() {
       return Math.ceil(props.entries.length / layout().columns);
     },
-    getScrollElement: () => parentRef,
+    getScrollElement: () => parent,
     estimateSize: () => layout().itemSize.height,
     gap: gap.y,
     overscan: 8,
@@ -65,7 +65,7 @@ export function VirtualGrid<T>(props: {
   });
 
   return (
-    <div ref={parentRef} class="h-full overflow-x-hidden overflow-y-auto">
+    <div ref={parent} class="h-full overflow-x-hidden overflow-y-auto">
       <ul
         ref={props.gridRef}
         class="relative"
