@@ -73,3 +73,18 @@ export function isIos() {
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
   );
 }
+
+type AwaitedObject<T> = {
+  [K in keyof T]: Awaited<T[K]>;
+};
+
+export async function parallelize<const T extends Record<PropertyKey, unknown>>(
+  input: T,
+) {
+  const keys = Reflect.ownKeys(input) as Array<keyof T>;
+  const values = await Promise.all(keys.map((key) => input[key]));
+
+  return Object.fromEntries(
+    keys.map((key, index) => [key, values[index]]),
+  ) as AwaitedObject<T>;
+}

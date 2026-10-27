@@ -8,9 +8,10 @@ import { useQueryState } from "../hooks/use-query-state";
 import { getAllGenres } from "../lib/api/server-functions";
 import { siteUrl } from "../lib/constants";
 import { genreNameToSlug } from "../lib/utils";
+import { sortHexColorsToGradient } from "../lib/utils/sort-hex-to-gradient";
 import { useQuery } from "@tanstack/solid-query";
 import { createFileRoute } from "@tanstack/solid-router";
-import { Show } from "solid-js";
+import { createMemo, Show } from "solid-js";
 
 export const Route = createFileRoute("/")({
   head: () => ({ links: [{ rel: "canonical", href: siteUrl }] }),
@@ -40,7 +41,7 @@ function RouteComponent() {
     defaultValue: "popularity",
   });
 
-  const sortType = useEnumToggle(["popularity", "alphabetical"], {
+  const sortType = useEnumToggle(["popularity", "alphabetical", "color"], {
     onUpdate: setSort,
     defaultValue: sort() ?? "popularity",
   });
@@ -74,6 +75,10 @@ function RouteComponent() {
                   →
                 </button>
               </Show>
+
+              <button class="btn" onClick={sortType.cycle}>
+                {sortType.current()}
+              </button>
             </div>
           </div>
         ),
@@ -118,12 +123,25 @@ function Genres(props: {
     }
   };
 
-  const sortedGenres = () =>
-    props.sortType === "alphabetical"
-      ? [...filteredGenres()].sort((a, b) =>
+  const sortedGenres = createMemo(() => {
+    const filtered = filteredGenres();
+
+    switch (props.sortType) {
+      case "popularity":
+        return filtered;
+
+      case "alphabetical":
+        return [...filtered].sort((a, b) =>
           a.genreName.localeCompare(b.genreName),
-        )
-      : filteredGenres();
+        );
+
+      case "color":
+        return sortHexColorsToGradient(filtered, (item) => item.color);
+
+      default:
+        return filtered;
+    }
+  });
 
   return (
     <VirtualGrid entries={sortedGenres()}>

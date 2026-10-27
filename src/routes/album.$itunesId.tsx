@@ -64,36 +64,38 @@ export const Route = createFileRoute("/album/$itunesId")({
 
 function RouteComponent() {
   const data = Route.useLoaderData();
-  const album = () => data()!.album;
-  const tracks = () => data()!.tracks;
   const router = useRouter();
 
   const backHref = () =>
     router.buildLocation({
       to: "/search",
-      search: { lucky: true, q: album().artistName },
+      search: { lucky: true, q: data().album.artistName },
     }).href;
 
   return (
     <Layout
-      header={{ title: album().collectionName, backHref: backHref() }}
+      header={{ title: data().album.collectionName, backHref: backHref() }}
       leading={
         <div class="flex flex-col gap-3">
           <img
-            src={album().artworkUrl100.replace("100x100bb", "600x600bb")}
-            alt={`${album().collectionName} album cover`}
+            src={data().album.artworkUrl100.replace("100x100bb", "600x600bb")}
+            alt={`${data().album.collectionName} album cover`}
             class="aspect-square w-full"
           />
-          <Chip to="/search" search={{ lucky: true, q: album().artistName }}>
-            {album().artistName}
+
+          <Chip
+            to="/search"
+            search={{ lucky: true, q: data().album.artistName }}
+          >
+            {data().album.artistName}
           </Chip>
           <p>
             Released{" "}
-            {fmt("date", new Date(album().releaseDate), {
+            {fmt("date", new Date(data().album.releaseDate), {
               dateStyle: "long",
             })}
           </p>
-          <p>Genre: {album().primaryGenreName}</p>
+          <p>Genre: {data().album.primaryGenreName}</p>
         </div>
       }
       trailing={
@@ -102,7 +104,7 @@ function RouteComponent() {
           class="flex h-full flex-col gap-3 overflow-x-hidden overflow-y-auto pb-32"
         >
           <h2 class="text-xl font-semibold">Tracks</h2>
-          <For each={tracks()}>
+          <For each={data().tracks}>
             {(track) => (
               <Chip
                 hash={String(track.trackId)}

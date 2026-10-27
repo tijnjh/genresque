@@ -1,3 +1,4 @@
+import { Spinner } from "./spinner";
 import { JSX } from "@solidjs/web";
 import { UseQueryResult } from "@tanstack/solid-query";
 import { Match, Switch, Loading } from "solid-js";
@@ -29,7 +30,7 @@ export function AsyncView<T extends UseQueryResult>(props: {
 function LoadingView() {
   return (
     <div class="grid size-full grow cursor-wait place-items-center">
-      <div class="size-9 animate-spin rounded-full border-4 border-zinc-300-700 border-t-zinc-600-400" />
+      <Spinner />
     </div>
   );
 }

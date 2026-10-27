@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import { ErrorAlert } from "../components/error-alert";
 import { MiniPlayer } from "../components/mini-player";
+import { Spinner } from "../components/spinner";
 import { siteName } from "../lib/constants";
 import { getErrorMessage } from "../lib/utils";
 import styleCss from "../style.css?url";
@@ -13,8 +14,10 @@ import {
   Link,
   Outlet,
   Scripts,
+  useRouterState,
 } from "@tanstack/solid-router";
-import { For } from "solid-js";
+import { cn } from "cn";
+import { createEffect, createSignal, For, Show } from "solid-js";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -49,6 +52,30 @@ function RootComponent() {
     defaultOptions: { queries: { retry: false } },
   });
 
+  const isNavigating = useRouterState({
+    select: (s) => s.status === "pending",
+  });
+
+  const [showNavigationSpinner, setShowNavigationSpinner] = createSignal(false);
+
+  createEffect(
+    () => isNavigating(),
+    (isNavigating) => {
+      if (!isNavigating) {
+        setShowNavigationSpinner(false);
+        return;
+      }
+
+      const timeout = setTimeout(() => {
+        setShowNavigationSpinner(true);
+      }, 500);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    },
+  );
+
   return (
     <QueryClientProvider client={queryClient}>
       <html lang="en" class="pointer-coarse:overscroll-none">
@@ -59,6 +86,32 @@ function RootComponent() {
 
         <body class="relative isolate touch-manipulation bg-zinc-200-800 text-black scheme-light-dark select-none dark:text-white">
           <div class="grid h-dvh grid-cols-1 overflow-hidden max-md:grid-rows-[1fr_min-content] md:grid-cols-[auto_1fr]">
+            <div
+              aria-hidden="true"
+              class="pointer-events-none fixed top-0 left-0 z-99999999 h-80 w-full select-none"
+            >
+              <div
+                class={cn(
+                  "absolute top-0 h-80 w-full rounded-[100%] bg-black/25 blur-3xl transition-all duration-500",
+                  showNavigationSpinner()
+                    ? "-translate-y-1/2 opacity-100"
+                    : "-translate-y-full opacity-0",
+                )}
+              />
+              <div
+                class={cn(
+                  "absolute top-6 left-1/2 -translate-x-1/2 transition-all duration-300",
+                  showNavigationSpinner()
+                    ? "translate-y-0 opacity-100"
+                    : "-translate-y-6 opacity-0",
+                )}
+              >
+                <Show when={isNavigating() && showNavigationSpinner()}>
+                  <Spinner />
+                </Show>
+              </div>
+            </div>
+
             <Aside />
 
             <CatchBoundary

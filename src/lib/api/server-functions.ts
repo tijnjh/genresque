@@ -1,16 +1,13 @@
-import genres from "../../data/genres.gen.csv?raw";
 import { everynoiseUrl } from "../constants";
 import { Scrappy } from "../scrappy";
+import { getAllGenres_serverOnly } from "../server-only";
 import { genreNameToSlug } from "../utils";
 import { $spotify } from "./clients/spotify";
 import { createServerFn } from "@tanstack/solid-start";
 import ky from "ky";
-import CSV from "papaparse";
 import * as v from "valibot";
 
-export const getAllGenres = createServerFn().handler(
-  () => CSV.parse(genres, { header: true }).data as Everynoise.Genre[],
-);
+export const getAllGenres = createServerFn().handler(getAllGenres_serverOnly);
 
 export const getGenreDetails = createServerFn()
   .validator(v.string())
@@ -56,16 +53,6 @@ export const getGenreDetails = createServerFn()
       .filter((g) => g.genreName !== genreName);
 
     return { genreName, artists, links, relatedGenres };
-  });
-
-export const lookup = createServerFn()
-  .validator(v.string())
-  .handler(async ({ data }) => {
-    const scrappy = await Scrappy.init(
-      `${everynoiseUrl}/lookup.cgi?who=${data}`,
-    );
-
-    console.log(scrappy.find("body"));
   });
 
 export const getGenresByArtistId = createServerFn()
