@@ -29,16 +29,21 @@ function RouteComponent() {
 
   const [searchQuery, setSearchQuery] = createSignal<string>();
 
-  createEffect(() => {
-    const artist = artistsQuery.data?.[0];
-    if (params().lucky && artist) {
-      navigate({
-        to: "/artist/$id",
-        params: { id: artist.id },
-        replace: true,
-      });
-    }
-  });
+  createEffect(
+    () =>
+      params().lucky && artistsQuery.isSuccess
+        ? artistsQuery.data[0]?.id
+        : undefined,
+    (id) => {
+      if (id) {
+        navigate({
+          to: "/artist/$id",
+          params: { id },
+          replace: true,
+        });
+      }
+    },
+  );
 
   return (
     <Layout
@@ -75,7 +80,7 @@ function RouteComponent() {
       <Show when={params().q}>
         <AsyncView query={artistsQuery}>
           {(results) => (
-            <div class="cool-grid">
+            <div class="cool-grid h-full p-3">
               <For each={results}>
                 {(artist) => (
                   <Chip

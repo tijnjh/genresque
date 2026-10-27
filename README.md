@@ -15,4 +15,4 @@ probably buggy too
 - solid
 - tanstack start
 - tanstack query
-- tanstack virtual
+- virtua

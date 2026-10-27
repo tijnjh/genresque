@@ -3,6 +3,7 @@ import { ErrorAlert } from "../components/error-alert";
 import { MiniPlayer } from "../components/mini-player";
 import { getErrorMessage } from "../lib/utils";
 import styleCss from "../style.css?url";
+import { HydrationScript } from "@solidjs/web";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import {
   CatchBoundary,
@@ -13,7 +14,6 @@ import {
   Scripts,
 } from "@tanstack/solid-router";
 import { For } from "solid-js";
-import { HydrationScript } from "solid-js/web";
 
 export const Route = createRootRoute({
   head: () => ({

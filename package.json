@@ -7,23 +7,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/solid-query": "^5.105.0",
-    "@tanstack/solid-virtual": "^3.13.50",
+    "@solidjs/web": "2.0.0-rc.18",
+    "@tanstack/solid-query": "^6.0.0-rc.5",
     "cn": "^0.5.0",
     "domino": "^2.1.8",
     "itunes-store-api": "^2.1.0",
     "jotai": "^3.0.1",
     "ky": "^2.2.0",
     "papaparse": "^5.7.0",
-    "solid-js": "1.9.17",
+    "solid-js": "2.0.0-rc.18",
     "type-fest": "^5.10.0",
-    "valibot": "^1.5.0"
+    "valibot": "^1.5.0",
+    "virtua": "0.53.6"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/nitro-v2-vite-plugin": "1.155.2",
-    "@tanstack/solid-router": "1.170.43",
-    "@tanstack/solid-start": "1.169.4",
+    "@tanstack/solid-router": "2.0.0-rc.9",
+    "@tanstack/solid-start": "2.0.0-rc.9",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^26.6.5",
     "@types/papaparse": "^5.5.2",
@@ -32,7 +33,7 @@
     "tailwind-color-pairings": "^0.1.2",
     "tailwindcss": "^4.3.3",
     "vite": "8.3.5",
-    "vite-plugin-solid": "^2.11.14"
+    "vite-plugin-solid": "^3.0.0-next.27"
   },
   "prettier": {
     "tailwindStylesheet": "./src/style.css",

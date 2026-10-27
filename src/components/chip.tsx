@@ -1,6 +1,7 @@
+import { JSX } from "@solidjs/web";
 import { Link, LinkProps } from "@tanstack/solid-router";
 import { cn } from "cn";
-import { JSX, splitProps } from "solid-js";
+import { omit } from "solid-js";
 
 // import { Marquee } from "tiny-marquee";
 
@@ -13,20 +14,21 @@ export function Chip(
     class?: string;
   },
 ) {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "children",
     "leading",
     "trailing",
     "inverse",
     "class",
-  ]);
+  );
 
   return (
     <div class="flex h-9 items-center">
-      {typeof local.leading === "string" ? (
-        <img class="aspect-square size-9" src={local.leading} />
+      {typeof props.leading === "string" ? (
+        <img class="aspect-square size-9" src={props.leading} />
       ) : (
-        local.leading
+        props.leading
       )}
 
       <Link
@@ -34,18 +36,18 @@ export function Chip(
         draggable={false}
         class={cn(
           "min-w-0 grow items-center px-0 [-webkit-touch-callout:none]",
-          local.inverse ? "btn-inverse" : "btn",
-          local.class,
+          props.inverse ? "btn-inverse" : "btn",
+          props.class,
         )}
       >
         {/* <Marquee initialPosition="start"> */}
-        <span class="truncate px-3" title={local.children}>
-          {local.children}
+        <span class="truncate px-3" title={props.children}>
+          {props.children}
         </span>
         {/* </Marquee> */}
       </Link>
 
-      {local.trailing}
+      {props.trailing}
     </div>
   );
 }

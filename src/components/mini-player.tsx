@@ -1,16 +1,13 @@
 import { nowPlaying, setNowPlaying } from "../lib/global";
 import { cn } from "cn";
-import { createEffect, on, Show } from "solid-js";
+import { createEffect, Show } from "solid-js";
 
 export function MiniPlayer() {
   let audioRef!: HTMLAudioElement;
 
-  createEffect(
-    on(nowPlaying, (track) => {
-      if (track.url) audioRef?.play().catch(() => {});
-    }),
-  );
-
+  createEffect(nowPlaying, (track) => {
+    if (track.url) audioRef?.play().catch(() => {});
+  });
   const cleanTitle = () => nowPlaying().title?.replace("e.g.", "").trim();
 
   return (

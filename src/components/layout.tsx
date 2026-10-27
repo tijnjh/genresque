@@ -1,8 +1,8 @@
 import { fixRelativeUrl } from "../lib/utils";
+import { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { cn } from "cn";
 import { children, ComponentProps, createMemo, For, Show } from "solid-js";
-import { JSX } from "solid-js";
 import { MergeExclusive } from "type-fest";
 
 export function Layout(
@@ -18,7 +18,7 @@ export function Layout(
     <div class="grid grid-rows-[1fr_auto] overflow-hidden md:grid-rows-[auto_1fr]">
       <Header {...header()} />
 
-      <div class="grid overflow-y-auto p-3">
+      <div class={cn("grid overflow-y-auto", !content() && "p-3")}>
         <Show
           when={content()}
           fallback={
@@ -34,9 +34,11 @@ export function Layout(
             </>
           }
         >
-          <main class="overflow-hidden">
-            <Title title={header().title} />
-            {content()}
+          <main class="flex min-h-0 flex-col overflow-hidden">
+            <div class="px-3 pt-3 md:hidden">
+              <Title title={header().title} />
+            </div>
+            <div class="min-h-0 flex-1 overflow-hidden">{content()}</div>
           </main>
         </Show>
       </div>

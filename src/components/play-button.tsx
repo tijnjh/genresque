@@ -1,14 +1,15 @@
 import { nowPlaying, setNowPlaying } from "../lib/global";
-import { JSX, splitProps } from "solid-js";
+import { JSX } from "@solidjs/web";
+import { omit } from "solid-js";
 
 export function PlayButton(
   props: JSX.HTMLAttributes<HTMLButtonElement> & {
     track: { title: string | undefined; url: string | undefined };
   },
 ) {
-  const [local, rest] = splitProps(props, ["track"]);
+  const rest = omit(props, "track");
 
-  const isThisTrackPlaying = () => nowPlaying().url === local.track.url;
+  const isThisTrackPlaying = () => nowPlaying().url === props.track.url;
 
   return (
     <button
@@ -16,7 +17,7 @@ export function PlayButton(
       onClick={() => {
         isThisTrackPlaying()
           ? setNowPlaying({ title: undefined, url: undefined })
-          : setNowPlaying(local.track);
+          : setNowPlaying(props.track);
       }}
     >
       {isThisTrackPlaying() ? "☐" : "▶︎"}
