@@ -29,7 +29,7 @@ a.btn-inverse {
 }
 
 @utility cool-grid {
-  @apply grid auto-rows-min grid-cols-responsive items-start gap-3 overflow-y-auto;
+  @apply grid auto-rows-min grid-cols-responsive content-start items-start gap-3 overflow-y-auto;
 }
 
 @utility grid-cols-responsive {

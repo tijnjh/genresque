@@ -25,7 +25,7 @@ export function Layout(
             <>
               <Title title={header().title} />
 
-              <main class="grid h-full grid-cols-1 gap-6 lg:grid-cols-[auto_1fr] lg:overflow-hidden">
+              <main class="grid h-full grid-cols-1 gap-6 max-lg:content-start lg:grid-cols-[auto_1fr] lg:overflow-hidden">
                 <div class="flex w-full flex-col gap-3 lg:w-115">
                   {props.leading}
                 </div>

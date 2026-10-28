@@ -18,6 +18,41 @@ export const spotifyKy = ky.create({
   },
 });
 
+export const lookupArtists = createServerFn()
+  .validator(v.string())
+  .handler(async ({ data }) => {
+    const spotifyRes = await spotifyKy("/search", {
+      searchParams: {
+        type: "artist",
+        q: data,
+        limit: 50,
+      },
+    }).json(
+      v.object({
+        artists: v.object({
+          items: v.array(
+            v.object({
+              name: v.string(),
+              id: v.string(),
+              images: v.array(
+                v.object({
+                  url: v.string(),
+                }),
+              ),
+            }),
+          ),
+        }),
+      }),
+    );
+
+    // filter out low quality "artists"
+    const filteredArtists = spotifyRes.artists.items.filter(
+      (i) => !!i.images.length,
+    );
+
+    return filteredArtists;
+  });
+
 export const getArtistById = createServerFn()
   .validator(v.string())
   .handler(async ({ data }) => {
