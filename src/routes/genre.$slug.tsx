@@ -9,7 +9,7 @@ import { createFileRoute } from "@tanstack/solid-router";
 import { For, Show } from "solid-js";
 
 export const Route = createFileRoute("/genre/$slug")({
-  loader: ({ params }) => $everynoise.getGenreDetails({ data: params.slug }),
+  loader: ({ params }) => $everynoise.getGenreBySlug({ data: params.slug }),
   head: ({ loaderData, params }) => ({
     meta: [
       {

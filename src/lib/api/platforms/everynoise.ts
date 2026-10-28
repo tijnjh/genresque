@@ -13,7 +13,7 @@ export const everynoiseKy = ky.create({
 
 export const getAllGenres = createServerFn().handler(getAllGenres_serverOnly);
 
-export const getGenreDetails = createServerFn()
+export const getGenreBySlug = createServerFn()
   .validator(v.string())
   .handler(async ({ data }) => {
     const genreSlug = genreNameToSlug(data);

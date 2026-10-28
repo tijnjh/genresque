@@ -28,8 +28,8 @@ export const Route = createFileRoute("/album/$itunesId")({
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) return {};
-
     const { album, tracks } = loaderData;
+
     const title = `${album.collectionName} by ${album.artistName} | ${siteName}`;
     const description = `Explore ${album.collectionName} by ${album.artistName}: release date, genre, and ${tracks.length} tracks with previews on ${siteName}.`;
     const url = `${siteUrl}/album/${params.itunesId}`;

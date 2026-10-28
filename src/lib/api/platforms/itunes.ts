@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/solid-start";
 import * as serverIsa from "itunes-store-api";
 import * as v from "valibot";
 
-export const getArtistAlbums = createServerFn()
+export const getAlbumsByArtistName = createServerFn()
   .validator(v.string())
   .handler(async ({ data: artistName }) => {
     const artists = await serverIsa

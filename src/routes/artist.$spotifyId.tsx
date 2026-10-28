@@ -11,22 +11,22 @@ import { For, Show } from "solid-js";
 
 export const Route = createFileRoute("/artist/$spotifyId")({
   loader: async ({ params }) => {
-    const spotifyArtist = await $spotify.getArtistDetailsById({
+    const spotifyArtist = await $spotify.getArtistById({
       data: params.spotifyId,
     });
 
-    const itunesArtist = await $itunes.getArtistAlbums({
+    const itunesArtistAlbums = await $itunes.getAlbumsByArtistName({
       data: spotifyArtist.name,
     });
 
-    const everynoiseGenres = await $everynoise.getGenresByArtistId({
+    const everynoiseArtistGenres = await $everynoise.getGenresByArtistId({
       data: params.spotifyId,
     });
 
     return {
       spotifyArtist,
-      itunesArtist,
-      everynoiseGenres,
+      itunesArtistAlbums,
+      everynoiseArtistGenres,
     };
   },
   head: ({ loaderData, params }) => ({
@@ -75,7 +75,7 @@ function RouteComponent() {
               {
                 name: "apple music",
                 icon: "/music-apple-com.png",
-                href: `https://music.apple.com/artist/${data().itunesArtist.artistId}`,
+                href: `https://music.apple.com/artist/${data().itunesArtistAlbums.artistId}`,
               },
               {
                 name: "AOTY",
@@ -94,11 +94,11 @@ function RouteComponent() {
             ]}
           />
 
-          <Show when={data().everynoiseGenres.length}>
+          <Show when={data().everynoiseArtistGenres.length}>
             <span class="section-divider">genres this artist is in</span>
 
             <div class="cool-grid">
-              <For each={data().everynoiseGenres}>
+              <For each={data().everynoiseArtistGenres}>
                 {(genre) => (
                   <Chip
                     to="/genre/$slug"
@@ -113,7 +113,9 @@ function RouteComponent() {
         </>
       }
 
-      trailing={<ArtistReleasesList releases={data().itunesArtist.albums} />}
+      trailing={
+        <ArtistReleasesList releases={data().itunesArtistAlbums.albums} />
+      }
     />
   );
 }
