@@ -1,9 +1,9 @@
 /// <reference types="vite/client" />
-import { ErrorAlert } from "../components/error-alert";
-import { MiniPlayer } from "../components/mini-player";
-import { Spinner } from "../components/spinner";
-import { siteName } from "../lib/constants";
-import { getErrorMessage } from "../lib/utils";
+import { ErrorAlert } from "#components/error-alert";
+import { MiniPlayer } from "#components/mini-player";
+import { Spinner } from "#components/spinner";
+import { siteName } from "#lib/constants";
+import { getErrorMessage } from "#lib/utils";
 import styleCss from "../style.css?url";
 import { HydrationScript } from "@solidjs/web";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";

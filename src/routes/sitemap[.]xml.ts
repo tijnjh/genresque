@@ -1,6 +1,6 @@
+import { siteUrl } from "#lib/constants";
+import { genreNameToSlug } from "#lib/utils";
 import genresCsv from "../data/genres.gen.csv?raw";
-import { siteUrl } from "../lib/constants";
-import { genreNameToSlug } from "../lib/utils";
 import { createFileRoute } from "@tanstack/solid-router";
 import CSV from "papaparse";
 

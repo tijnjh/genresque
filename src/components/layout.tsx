@@ -1,4 +1,4 @@
-import { fixRelativeUrl } from "../lib/utils";
+import { fixRelativeUrl } from "#lib/utils";
 import { JSX } from "@solidjs/web";
 import { Link } from "@tanstack/solid-router";
 import { cn } from "cn";

@@ -1,15 +1,15 @@
-import { Chip } from "../components/chip";
-import { Layout } from "../components/layout";
-import { PlayButton } from "../components/play-button";
-import { SpotifyWidget } from "../components/spotify-widget";
-import { everynoise_getGenreDetails } from "../lib/api/server-functions";
-import { siteName, siteUrl } from "../lib/constants";
-import { findSoundOfPlaylistId, genreNameToSlug } from "../lib/utils";
+import { Chip } from "#components/chip";
+import { Layout } from "#components/layout";
+import { PlayButton } from "#components/play-button";
+import { SpotifyWidget } from "#components/spotify-widget";
+import { $everynoise } from "#lib/api/index";
+import { siteName, siteUrl } from "#lib/constants";
+import { findSoundOfPlaylistId, genreNameToSlug } from "#lib/utils";
 import { createFileRoute } from "@tanstack/solid-router";
 import { For, Show } from "solid-js";
 
 export const Route = createFileRoute("/genre/$slug")({
-  loader: ({ params }) => everynoise_getGenreDetails({ data: params.slug }),
+  loader: ({ params }) => $everynoise.getGenreDetails({ data: params.slug }),
   head: ({ loaderData, params }) => ({
     meta: [
       {

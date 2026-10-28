@@ -1,4 +1,4 @@
-import { nowPlaying, setNowPlaying } from "../lib/global";
+import { nowPlaying, setNowPlaying } from "#lib/global";
 import { JSX } from "@solidjs/web";
 import { omit } from "solid-js";
 

@@ -1,27 +1,25 @@
-import { Chip } from "../components/chip";
-import { Layout } from "../components/layout";
-import { PlayButton } from "../components/play-button";
-import { $itunes } from "../lib/api/clients/itunes";
-import { siteName, siteUrl } from "../lib/constants";
-import { fmt } from "../lib/utils";
+import { Chip } from "#components/chip";
+import { Layout } from "#components/layout";
+import { PlatformLinks } from "#components/platform-links";
+import { PlayButton } from "#components/play-button";
+import { $itunes } from "#lib/api/index";
+import { siteName, siteUrl } from "#lib/constants";
+import { fmt, trimItunesCollectionPostfix } from "#lib/utils";
 import { createFileRoute, notFound, useRouter } from "@tanstack/solid-router";
 import { For } from "solid-js";
-import * as itunes from "itunes-store-api";
-import { PlatformLinks } from "../components/platform-links";
-import { trimItunesCollectionPostfix } from "../lib/utils/trim-itunes-collection-postfix";
 
 export const Route = createFileRoute("/album/$itunesId")({
   loader: async ({ params }) => {
     if (!/^\d+$/.test(params.itunesId)) throw notFound();
 
-    const response = await $itunes.lookup("id", Number(params.itunesId), {
+    const response = await $itunes.isa.lookup("id", Number(params.itunesId), {
       media: "music",
       entity: "song",
     });
 
     // for some reason the first result of a song query on an album returns the album itself..
     // weird but not complaining since it saves us a request :)
-    const album = response.results[0] as unknown as itunes.ResultAlbum;
+    const album = response.results[0] as unknown as Itunes.ResultAlbum;
     if (album.collectionType !== "Album") throw notFound();
 
     const tracks = response.results.filter((r) => r.wrapperType === "track");

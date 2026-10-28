@@ -18,7 +18,5 @@ export const isValidGenre = createServerOnlyFn((genreName: string) => {
     replaced.add(genreName.replace(from, to));
   }
 
-  console.log({ replaced, genreName });
-
   return genres.filter((genre) => replaced.has(genre.genreName));
 });

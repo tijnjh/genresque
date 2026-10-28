@@ -1,17 +1,19 @@
-import { everynoiseUrl } from "../constants";
-import { Scrappy } from "../scrappy";
-import { getAllGenres_serverOnly } from "../server-only";
-import { genreNameToSlug } from "../utils";
-import { $spotify } from "./clients/spotify";
+import { Scrappy } from "#lib/scrappy";
+import { getAllGenres_serverOnly } from "#lib/server-only";
+import { genreNameToSlug } from "#lib/utils";
 import { createServerFn } from "@tanstack/solid-start";
 import ky from "ky";
 import * as v from "valibot";
 
-export const everynoise_getAllGenres = createServerFn().handler(
-  getAllGenres_serverOnly,
-);
+const everynoiseUrl = "https://everynoise.com";
 
-export const everynoise_getGenreDetails = createServerFn()
+export const everynoiseKy = ky.create({
+  baseUrl: everynoiseUrl,
+});
+
+export const getAllGenres = createServerFn().handler(getAllGenres_serverOnly);
+
+export const getGenreDetails = createServerFn()
   .validator(v.string())
   .handler(async ({ data }) => {
     const genreSlug = genreNameToSlug(data);
@@ -57,7 +59,7 @@ export const everynoise_getGenreDetails = createServerFn()
     return { genreName, artists, links, relatedGenres };
   });
 
-export const everynoise_getGenresByArtistId = createServerFn()
+export const getGenresByArtistId = createServerFn()
   .validator(v.string())
   .handler(async ({ data }) => {
     const res = await ky
@@ -68,53 +70,32 @@ export const everynoise_getGenresByArtistId = createServerFn()
     return (Object.values(res)[0] as string[]) ?? [];
   });
 
-export const spotify_lookupArtists = createServerFn()
-  .validator(v.string())
-  .handler(async ({ data }) => {
-    const spotifyRes = await $spotify("/search", {
-      searchParams: {
-        type: "artist",
-        q: data,
-        limit: 50,
-      },
-    }).json(
-      v.object({
-        artists: v.object({
-          items: v.array(
-            v.object({
-              name: v.string(),
-              id: v.string(),
-              images: v.array(
-                v.object({
-                  url: v.string(),
-                }),
-              ),
-            }),
-          ),
-        }),
-      }),
-    );
+let cachedToken: {
+  accessToken: string;
+  expiresAt: number;
+} | null = null;
 
-    // filter out low quality "artists"
-    const filteredArtists = spotifyRes.artists.items.filter(
-      (i) => !!i.images.length,
-    );
+export async function swipeSpotifyToken(): Promise<string> {
+  if (cachedToken && Date.now() < cachedToken.expiresAt) {
+    return cachedToken.accessToken;
+  }
 
-    return filteredArtists;
-  });
+  const { access_token, expires_in } = await everynoiseKy("spotify_auth.cgi", {
+    searchParams: {
+      action: "accesstoken",
+      secret: "fetch",
+    },
+  }).json(
+    v.object({
+      access_token: v.string(),
+      expires_in: v.number(),
+    }),
+  );
 
-export const spotify_getArtistDetailsById = createServerFn()
-  .validator(v.string())
-  .handler(async ({ data }) => {
-    const res = await $spotify(`artists/${data}`).json(
-      v.object({
-        name: v.string(),
-        followers: v.object({
-          total: v.number(),
-        }),
-        id: v.string(),
-      }),
-    );
+  cachedToken = {
+    accessToken: access_token,
+    expiresAt: Date.now() + expires_in * 1000,
+  };
 
-    return res;
-  });
+  return access_token;
+}

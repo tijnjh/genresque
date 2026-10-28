@@ -1,7 +1,7 @@
-import { Chip } from "../components/chip";
-import { Layout } from "../components/layout";
-import { spotify_lookupArtists } from "../lib/api/server-functions";
-import { siteName } from "../lib/constants";
+import { Chip } from "#components/chip";
+import { Layout } from "#components/layout";
+import { $spotify } from "#lib/api/index";
+import { siteName } from "#lib/constants";
 import { createFileRoute, redirect } from "@tanstack/solid-router";
 import { createSignal, For, Show } from "solid-js";
 import * as v from "valibot";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/search")({
 
   loader: async ({ deps: { search } }) => {
     if (!search.q) return;
-    const artists = await spotify_lookupArtists({ data: search.q });
+    const artists = await $spotify.lookupArtists({ data: search.q });
 
     if (search.lucky) {
       const topResultId = artists[0].id;

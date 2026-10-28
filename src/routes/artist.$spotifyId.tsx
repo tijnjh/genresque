@@ -1,30 +1,25 @@
-import { Chip } from "../components/chip";
-import { Layout } from "../components/layout";
-import { PlatformLinks } from "../components/platform-links";
-import { SpotifyWidget } from "../components/spotify-widget";
-import { itunes_getArtistAlbums } from "../lib/api/album";
-import {
-  spotify_getArtistDetailsById,
-  everynoise_getGenresByArtistId,
-} from "../lib/api/server-functions";
-import { siteName, siteUrl } from "../lib/constants";
-import { genreNameToSlug } from "../lib/utils";
+import { Chip } from "#components/chip";
+import { Layout } from "#components/layout";
+import { PlatformLinks } from "#components/platform-links";
+import { SpotifyWidget } from "#components/spotify-widget";
+import { $everynoise, $itunes, $spotify } from "#lib/api/index";
+import { siteName, siteUrl } from "#lib/constants";
+import { genreNameToSlug, trimItunesCollectionPostfix } from "#lib/utils";
 import { createFileRoute } from "@tanstack/solid-router";
 import { ResultAlbum } from "itunes-store-api";
 import { For, Show } from "solid-js";
-import { trimItunesCollectionPostfix } from "../lib/utils/trim-itunes-collection-postfix";
 
 export const Route = createFileRoute("/artist/$spotifyId")({
   loader: async ({ params }) => {
-    const spotifyArtist = await spotify_getArtistDetailsById({
+    const spotifyArtist = await $spotify.getArtistDetailsById({
       data: params.spotifyId,
     });
 
-    const itunesArtist = await itunes_getArtistAlbums({
+    const itunesArtist = await $itunes.getArtistAlbums({
       data: spotifyArtist.name,
     });
 
-    const everynoiseGenres = await everynoise_getGenresByArtistId({
+    const everynoiseGenres = await $everynoise.getGenresByArtistId({
       data: params.spotifyId,
     });
 

@@ -1,5 +1,7 @@
+import type {} from "itunes-store-api";
+
 declare global {
-  namespace Everynoise {
+  export namespace Everynoise {
     interface Genre {
       genreName: string;
       color: string;
@@ -7,6 +9,17 @@ declare global {
       previewTitle: string;
     }
   }
+
+  export namespace Spotify {
+    interface Artist {
+      name: string;
+      id: string;
+      images: Array<{ url: string }>;
+    }
+  }
+
+  // @ts-expect-error
+  export type * as Itunes from "itunes-store-api";
 }
 
 export {};

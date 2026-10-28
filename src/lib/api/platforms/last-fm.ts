@@ -1,16 +1,16 @@
-import { Scrappy } from "../../scrappy";
-import { isValidGenre } from "../../server-only";
+import { Scrappy } from "#lib/scrappy";
+import { isValidGenre } from "#lib/server-only";
 import { createServerFn } from "@tanstack/solid-start";
 import ky from "ky";
 import * as v from "valibot";
 
-export const $lastFm = ky.create({
+export const lastFmKy = ky.create({
   baseUrl: "https://last.fm",
 });
 
 const baseUrl = "https://last.fm";
 
-export const getLastFmAlbumTags = createServerFn()
+export const getAlbumTags = createServerFn()
   .validator(
     v.object({
       artist: v.string(),
@@ -26,6 +26,5 @@ export const getLastFmAlbumTags = createServerFn()
 
     const tags = tagEls?.map((el) => el.textContent) ?? [];
 
-    console.log({ tagsfromremotefunctionthing: tags });
     return tags.filter(isValidGenre);
   });

@@ -1,5 +1,5 @@
+import { Scrappy } from "#lib/scrappy";
 import everynoiseHtml from "../data/everynoise.html?raw";
-import { Scrappy } from "../lib/scrappy.ts";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { cwd } from "node:process";

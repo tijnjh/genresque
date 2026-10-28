@@ -89,8 +89,6 @@ export function VirtualGrid<T>(props: {
 
   const visible = createMemo(() => {
     version();
-    // Update the external store before reading its range, so filtering and
-    // column changes cannot render a frame with the previous row count.
     syncingCount = true;
     try {
       store.$update(ACTION_ITEMS_LENGTH_CHANGE, rowCount());
