@@ -83,7 +83,7 @@ function RouteComponent() {
               },
               {
                 name: "RYM",
-                href: `https://rateyourmusic.com/release/artist/${data().spotifyArtist.name}-1`,
+                href: `https://rateyourmusic.com/artist/${data().spotifyArtist.name}-1`,
               },
               {
                 name: "bandcamp",
