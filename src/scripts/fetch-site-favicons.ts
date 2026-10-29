@@ -11,6 +11,7 @@ const sites = [
   "music.apple.com",
   "bandcamp.com",
   "sc.maid.zone",
+  "rateyourmusic.com",
 ];
 
 for (const site of sites) {

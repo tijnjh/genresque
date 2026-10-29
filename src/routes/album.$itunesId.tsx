@@ -144,6 +144,10 @@ function RouteComponent() {
                 href: `https://www.albumoftheyear.org/search/albums/?q=${constructedSearchQuery()}`,
               },
               {
+                name: "RYM",
+                href: `https://rateyourmusic.com/release/album/${data().album.artistName}/${streamlinedCollectionName()}/`,
+              },
+              {
                 name: "bandcamp",
                 icon: "/bandcamp-com.png",
                 href: `https://bandcamp.com/search?q=${constructedSearchQuery()}&item_type=a`,

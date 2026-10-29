@@ -82,6 +82,10 @@ function RouteComponent() {
                 href: `https://www.albumoftheyear.org/search/artists/?q=${data().spotifyArtist.name}`,
               },
               {
+                name: "RYM",
+                href: `https://rateyourmusic.com/release/artist/${data().spotifyArtist.name}-1`,
+              },
+              {
                 name: "bandcamp",
                 icon: "/bandcamp-com.png",
                 href: `https://bandcamp.com/search?q=${data().spotifyArtist.name}&item_type=b`,
