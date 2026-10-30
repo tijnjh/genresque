@@ -4,7 +4,11 @@ import { PlatformLinks } from "#components/platform-links";
 import { PlayButton } from "#components/play-button";
 import { $itunes } from "#lib/api/index";
 import { siteName, siteUrl } from "#lib/constants";
-import { fmt, trimItunesCollectionPostfix } from "#lib/utils";
+import {
+  fmt,
+  getBigItunesArtwork,
+  trimItunesCollectionPostfix,
+} from "#lib/utils";
 import { createFileRoute, notFound, useRouter } from "@tanstack/solid-router";
 import { For } from "solid-js";
 
@@ -33,7 +37,7 @@ export const Route = createFileRoute("/album/$itunesId")({
     const title = `${album.collectionName} by ${album.artistName} | ${siteName}`;
     const description = `Explore ${album.collectionName} by ${album.artistName}: release date, genre, and ${tracks.length} tracks with previews on ${siteName}.`;
     const url = `${siteUrl}/album/${params.itunesId}`;
-    const artwork = album.artworkUrl100.replace("100x100bb", "600x600bb");
+    const artwork = getBigItunesArtwork(album);
 
     return {
       meta: [
@@ -98,9 +102,9 @@ function RouteComponent() {
       leading={
         <div class="flex flex-col gap-3">
           <img
-            src={data().album.artworkUrl100.replace("100x100bb", "600x600bb")}
+            src={getBigItunesArtwork(data().album)}
             alt={`${data().album.collectionName} album cover`}
-            class="aspect-square w-full"
+            class="mx-auto aspect-square w-full max-w-72"
           />
 
           <Chip
@@ -170,7 +174,8 @@ function RouteComponent() {
           <For each={data().tracks}>
             {(track) => (
               <Chip
-                hash={String(track.trackId)}
+                to={"/track/$itunesId"}
+                params={{ itunesId: String(track.trackId) }}
                 trailing={
                   <PlayButton
                     class="btn-inverse size-9 shrink-0 justify-center"

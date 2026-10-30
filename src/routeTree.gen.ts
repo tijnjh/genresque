@@ -16,6 +16,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AlbumItunesIdRouteImport } from './routes/album.$itunesId'
 import { Route as ArtistSpotifyIdRouteImport } from './routes/artist.$spotifyId'
 import { Route as GenreSlugRouteImport } from './routes/genre.$slug'
+import { Route as TrackItunesIdRouteImport } from './routes/track.$itunesId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const GenreSlugRoute = GenreSlugRouteImport.update({
   path: '/genre/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrackItunesIdRoute = TrackItunesIdRouteImport.update({
+  id: '/track/$itunesId',
+  path: '/track/$itunesId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/album/$itunesId': typeof AlbumItunesIdRoute
   '/artist/$spotifyId': typeof ArtistSpotifyIdRoute
   '/genre/$slug': typeof GenreSlugRoute
+  '/track/$itunesId': typeof TrackItunesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/album/$itunesId': typeof AlbumItunesIdRoute
   '/artist/$spotifyId': typeof ArtistSpotifyIdRoute
   '/genre/$slug': typeof GenreSlugRoute
+  '/track/$itunesId': typeof TrackItunesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/album/$itunesId': typeof AlbumItunesIdRoute
   '/artist/$spotifyId': typeof ArtistSpotifyIdRoute
   '/genre/$slug': typeof GenreSlugRoute
+  '/track/$itunesId': typeof TrackItunesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/album/$itunesId'
     | '/artist/$spotifyId'
     | '/genre/$slug'
+    | '/track/$itunesId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/album/$itunesId'
     | '/artist/$spotifyId'
     | '/genre/$slug'
+    | '/track/$itunesId'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/album/$itunesId'
     | '/artist/$spotifyId'
     | '/genre/$slug'
+    | '/track/$itunesId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   AlbumItunesIdRoute: typeof AlbumItunesIdRoute
   ArtistSpotifyIdRoute: typeof ArtistSpotifyIdRoute
   GenreSlugRoute: typeof GenreSlugRoute
+  TrackItunesIdRoute: typeof TrackItunesIdRoute
 }
 
 declare module '@tanstack/solid-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof GenreSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/track/$itunesId': {
+      id: '/track/$itunesId'
+      path: '/track/$itunesId'
+      fullPath: '/track/$itunesId'
+      preLoaderRoute: typeof TrackItunesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   AlbumItunesIdRoute: AlbumItunesIdRoute,
   ArtistSpotifyIdRoute: ArtistSpotifyIdRoute,
   GenreSlugRoute: GenreSlugRoute,
+  TrackItunesIdRoute: TrackItunesIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

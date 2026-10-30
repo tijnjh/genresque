@@ -142,3 +142,11 @@ export function sortHexColorsToGradient<T>(
     })
     .map(({ item }) => item);
 }
+
+export function getBigItunesArtwork({
+  artworkUrl100,
+}: {
+  artworkUrl100: string;
+}) {
+  return artworkUrl100.replace("100x100bb", "600x600bb");
+}
