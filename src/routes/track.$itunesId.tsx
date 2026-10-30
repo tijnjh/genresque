@@ -123,7 +123,7 @@ function RouteComponent() {
               <PlayButton
                 class="btn-inverse size-9 shrink-0 justify-center"
                 aria-label={isPlaying() ? "Stop preview" : "Play preview"}
-                aria-pressed={isPlaying()}
+                aria-pressed={isPlaying() ? "true" : "false"}
                 track={{
                   title: `${track().artistName} — ${track().trackName}`,
                   url: track().previewUrl,
